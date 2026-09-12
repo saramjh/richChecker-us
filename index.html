@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Find your billionaire lookalike with a playful AI face comparison. Your photo is analyzed on your device.">
+  <meta name="theme-color" content="#1a1035">
+  <title>Billionaire Face Match</title>
+  <link rel="icon" type="image/svg+xml" href="assets/imgs/favicon.svg">
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4410729598083068" crossorigin="anonymous"></script>
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Billionaire Face Match">
+  <meta property="og:description" content="Which billionaire do you look like? Compare six facial proportions and share your match card.">
+  <meta property="og:site_name" content="Billionaire Face Match">
+  <meta property="og:locale" content="en_US">
+
+  <!-- Twitter Card -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Billionaire Face Match">
+  <meta name="twitter:description" content="Which billionaire do you look like? Compare six facial proportions and share your match card.">
+
+  <!-- 검색엔진이 이 페이지를 "일반 웹앱"으로 명확히 이해하도록 구조화 데이터를 준다 —
+       구글 등에서 리치 결과(앱 이름/설명/무료 여부 등)로 노출될 확률을 높인다. -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "Billionaire Face Match",
+    "description": "An entertainment app comparing six facial proportions with AI-generated billionaire caricatures. Photos are processed on your device.",
+    "applicationCategory": "EntertainmentApplication",
+    "operatingSystem": "Any",
+    "inLanguage": "en-US",
+    "isAccessibleForFree": true,
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    }
+  }
+  </script>
+
+  <link rel="stylesheet" href="css/style.css">
+  <!-- 전부 defer로 로드한다(파싱을 막지 않기 위해). script.js는 맨 먼저 둔다 — defer 스크립트는
+       "문서 순서대로 실행"되므로, script.js를 라이브러리들 뒤에 두면 그 라이브러리들의 실행이
+       전부 끝날 때까지 업로드/초기화 버튼 리스너가 안 붙는 채로 남는다. script.js 안에서 외부
+       라이브러리(gsap/Tone/faceapi 등)를 쓰는 코드는 전부 "나중에 호출되는 함수 안"에만 있고
+       최상단에서 즉시 실행되는 건 없으므로, 순서를 앞으로 당겨도 안전하다. -->
+  <script defer src="js/script.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
+</head>
+
+<body>
+  <div class="container">
+    <!-- 부팅 오버레이: script.js가 실제로 실행되어 리스너를 다 붙이기 전까지 카드 전체를 덮어서
+         "로딩 중"임을 명확히 알려준다. 작은 스피너 하나로는 눈에 안 띄어서 고장난 걸로 오해하고
+         이탈할 수 있다는 피드백 반영 — script.js 맨 위에서 즉시 제거한다. -->
+    <div id="bootOverlay">
+      <div id="bootSpinner"></div>
+      <p>Loading…</p>
+    </div>
+    <div id="window">
+      <h1>Billionaire Face Match</h1>
+      <hr>
+      <!-- 소개(태그라인/포브스 배지/이용흐름/가치제안)는 "이걸 왜 해야 하는지" 모르는 첫
+           방문자에게 필요한 정보다 — 이미 결과를 받은 사용자에겐 불필요한 반복이라는 피드백
+           반영, 결과가 나오면 이 블록 전체를 접는다(JS에서 처리, 다시 하면 재노출). -->
+      <div id="introSection">
+        <p class="tagline">Which billionaire do you look like?</p>
+        <p class="forbes-badge">✦ Korean face-reading inspiration meets AI ✦</p>
+
+        <!-- 이용 흐름: 무엇을 하게 되고, 무엇을 얻는지 미리 보여준다 -->
+        <div id="howItWorks">
+          <div class="step">
+            <span class="step-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path
+                  d="M13.997 4a2 2 0 0 1 1.76 1.05l.486.9A2 2 0 0 0 18.003 7H20a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h1.997a2 2 0 0 0 1.759-1.048l.489-.904A2 2 0 0 1 10.004 4z" />
+                <circle cx="12" cy="13" r="3" />
+              </svg></span>
+            <span class="step-label">Add a photo</span>
+          </div>
+          <span class="step-arrow">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
+              <path d="M5 12h14" />
+              <path d="m12 5 7 7-7 7" />
+            </svg>
+          </span>
+          <div class="step">
+            <span class="step-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 7V5a2 2 0 0 1 2-2h2" />
+                <path d="M17 3h2a2 2 0 0 1 2 2v2" />
+                <path d="M21 17v2a2 2 0 0 1-2 2h-2" />
+                <path d="M7 21H5a2 2 0 0 1-2-2v-2" />
+                <path d="M8 14s1.5 2 4 2 4-2 4-2" />
+                <path d="M9 9h.01" />
+                <path d="M15 9h.01" />
+              </svg></span>
+            <span class="step-label">Scan features</span>
+          </div>
+          <span class="step-arrow">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
+              <path d="M5 12h14" />
+              <path d="m12 5 7 7-7 7" />
+            </svg>
+          </span>
+          <div class="step">
+            <span class="step-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path
+                  d="M11.562 3.266a.5.5 0 0 1 .876 0L15.39 8.87a1 1 0 0 0 1.516.294L21.183 5.5a.5.5 0 0 1 .798.519l-2.834 10.246a1 1 0 0 1-.956.734H5.81a1 1 0 0 1-.957-.734L2.02 6.02a.5.5 0 0 1 .798-.519l4.276 3.664a1 1 0 0 0 1.516-.294z" />
+                <path d="M5 21h14" />
+              </svg></span>
+            <span class="step-label">Find a match</span>
+          </div>
+          <span class="step-arrow">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+              stroke-linejoin="round">
+              <path d="M5 12h14" />
+              <path d="m12 5 7 7-7 7" />
+            </svg>
+          </span>
+          <div class="step">
+            <span class="step-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M13 19a4 4 0 0 0-8 0" />
+                <path d="M16 10h2" />
+                <path d="M16 14h2" />
+                <circle cx="9" cy="12" r="3" />
+                <rect x="2" y="5" width="20" height="14" rx="2" />
+              </svg></span>
+            <span class="step-label">Share your card</span>
+          </div>
+        </div>
+        <p class="value-prop">Discover your standout feature and get a <strong>personalized match card</strong> to share.</p>
+        <details class="culture-note" open>
+          <summary>Inspired by Korean face reading</summary>
+          <p>Meet <strong>gwansang</strong>, Korea’s traditional art of face reading. This playful take on Korean culture pairs that inspiration with AI to compare six facial proportions with billionaire caricatures.</p>
+          <p>Think of it as a cultural conversation starter. Your face does not determine your fortune, personality, or potential.</p>
+        </details>
+        <!-- 파일 업로드 버튼 (숨김 처리) -->
+        <input type="file" id="uploadImage" accept="image/*" style="display: none;">
+
+        <!-- Choose a photo to find your match 표시. is-initializing 상태에서는 클릭이 안 먹는 게 정상이라는 걸
+              시각적으로 보여준다(스피너+반투명) — script.js가 로드를 끝내고 클릭 리스너를 실제로
+              건 다음에만 이 클래스를 제거해서, "눌러도 반응 없는 버튼"이 생기지 않게 한다.
+              결과가 나오면 이 미리보기 자체도 숨긴다(아래 매칭 카드에 "나" 사진이 이미 나오므로
+              중복) — 다시 하려면 결과 영역의 재시작 버튼으로 돌아온다. -->
+        <div id="uploadedImageContainer" class="is-initializing">
+          <img id="uploadedImage" role="button" tabindex="0" aria-label="Choose a photo" src="assets/imgs/placeholder.svg" alt="Choose a photo to find your match">
+          <div id="initSpinner"></div>
+          <!-- 일치율 %는 매칭 카드 안 "나 ≈ 매칭인물" 사이 자리로 옮겼다(사진과 사진 사이에
+                있어야 "이 둘이 몇 % 닮았다"는 뜻이 더 직접적으로 읽힌다는 판단) — 대신 이 사진
+                자체에 대한 정보(AI 추정 나이·표정)를 뱃지로 붙인다(JS에서 채움). -->
+          <div id="aiInfoBadge"></div>
+        </div>
+        <p class="fine-print">Use a clear, well-lit photo facing the camera.</p>
+
+        <!-- 자동광고가 이 폭 고정 카드형 레이아웃과 안 맞아 업로드 영역 한복판까지 큰 광고를
+           끼워넣는 문제가 있었다 — 자동광고 대신 위치를 고정한 반응형 광고 유닛으로 대체.
+           min-height로 로드 전/후 레이아웃이 튀지 않게 공간을 미리 예약한다. -->
+        <div class="ad-slot">
+          <span class="ad-label">Advertisement</span>
+          <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-4410729598083068"
+            data-ad-slot="3416531598" data-ad-format="auto" data-full-width-responsive="true"></ins>
+        </div>
+      </div>
+
+
+      <!-- 결과 표시 영역 -->
+      <div id="resultsContainer" style="display: none;">
+        <p id="averageResult"></p> <!-- 평균 결과 표시 영역 추가 -->
+        <!-- 저장/공유 시 내 얼굴이 그대로 나가는 게 부담스러울 수 있다는 피드백 — 매칭 카드와
+             저장용 카드 양쪽의 "나" 사진을 한 번에 블러 처리하는 토글. 결과·매칭 정보는
+             그대로 유지되고 얼굴만 가려진다(JS: toggleFaceHidden). -->
+        <button id="faceHideToggle" type="button" aria-pressed="false">
+          <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round">
+            <path d="M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49" />
+            <path d="M14.084 14.158a3 3 0 0 1-4.242-4.242" />
+            <path d="M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143" />
+            <path d="m2 2 20 20" />
+          </svg>
+          <span id="faceHideToggleLabel">Hide my face when sharing</span>
+        </button>
+        <div id="saveImg">
+          <button id="saveImgBtn">
+            <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 15V3" />
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <path d="m7 10 5 5 5-5" />
+            </svg>
+            Save match card
+          </button>
+        </div>
+        <!-- 카카오톡/페이스북/X 공식 공유는 서버가 없으면 "방금 만든 개인 결과 이미지"를 전달할
+             방법이 없어 사이트 링크·고정 문구만 보낼 수 있었다(플랫폼 자체의 한계) — 결과 이미지가
+             빠진 공유는 의미가 없다는 피드백으로 제거하고, 실제 카드 이미지 파일을 OS 공유
+             시트로 첨부하는 공유하기/Instagram만 남긴다. -->
+        <div class="share-row">
+          <button id="webShareBtn" aria-label="Share to another app" title="Share to another app">
+            <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="18" cy="5" r="3" />
+              <circle cx="6" cy="12" r="3" />
+              <circle cx="18" cy="19" r="3" />
+              <line x1="8.59" x2="15.42" y1="13.51" y2="17.49" />
+              <line x1="15.41" x2="8.59" y1="6.51" y2="10.49" />
+            </svg>
+          </button>
+          <button id="instagramShareBtn" aria-label="Share to Instagram" title="Instagram">
+            <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
+              <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+              <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
+            </svg>
+          </button>
+        </div>
+        <!-- 초기화는 업로드 전 화면에선 되돌릴 대상이 없어 불필요하다는 피드백 — 결과 영역
+             안으로 옮겨서 결과가 있을 때만(#resultsContainer 표시 여부에 자연히 종속) 나타나게
+             하고, 주 액션(저장/공유)과 헷갈리지 않도록 텍스트 링크에 가깝게 눌러둔다. -->
+        <button id="reset" class="reset-link">Try another photo</button>
+
+        <div class="ad-slot">
+          <span class="ad-label">Advertisement</span>
+          <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-4410729598083068"
+            data-ad-slot="3416531598" data-ad-format="auto" data-full-width-responsive="true"></ins>
+        </div>
+      </div>
+      <!-- "개인정보를 절대 수집하지 않습니다"는 부정확했다 — 사진 자체는 서버로 안 가고 기기
+           안에서만 분석되는 게 맞지만, 구글 애널리틱스/애드센스가 쿠키를 쓰는 건 사실이라 그
+           부분까지 정직하게 밝히는 문구로 바꿨다. 예전엔 하단 고정 푸터(높이 30px 고정, 한 줄용)
+           안에 욱여넣었더니 두 번째 줄이 overflow:hidden에 잘려서 아예 안 보였다 — 카드 하단의
+           일반 흐름 안에 작은 글씨 각주로 옮긴다. -->
+      <p class="fine-print">For entertainment only. Facial features do not predict wealth, personality, or future success. Comparisons use AI-generated caricatures, not photographs of the people named.</p>
+      <p id="privacyNote">Your photo is analyzed on your device. It is never uploaded or saved by this site. Saving or sharing a card is your choice.</p>
+    </div>
+  </div>
+
+  <script>
+    if (!['localhost', '127.0.0.1'].includes(location.hostname)) {
+      document.querySelectorAll(".adsbygoogle").forEach(() => {
+        (window.adsbygoogle = window.adsbygoogle || []).push({});
+      });
+    }
+  </script>
+
+  <!-- 저장/공유용 카드: Instagram 피드(4:5)/페이스북/카카오톡에 바로 올리기 좋은 비율로 따로
+       그려서 캡처한다. 화면에는 보이지 않고 캡처 시에만 사용됨. -->
+  <div id="shareCard">
+    <div class="share-card-brand">✦ Billionaire Face Match ✦</div>
+    <div class="share-card-headline">
+      <span id="shareCardPercent"></span> match with <span id="shareCardMatchName"></span>
+    </div>
+    <div class="share-card-photos">
+      <div class="share-card-photo-box">
+        <div class="photo-frame">
+          <img id="shareCardUserPhoto" alt="You">
+          <div class="face-hidden-overlay">
+            <svg class="face-hidden-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <path
+                d="M10.733 5.076a10.744 10.744 0 0 1 11.205 6.575 1 1 0 0 1 0 .696 10.747 10.747 0 0 1-1.444 2.49" />
+              <path d="M14.084 14.158a3 3 0 0 1-4.242-4.242" />
+              <path d="M17.479 17.499a10.75 10.75 0 0 1-15.417-5.151 1 1 0 0 1 0-.696 10.75 10.75 0 0 1 4.446-5.143" />
+              <path d="m2 2 20 20" />
+            </svg>
+            <span>Hidden</span>
+          </div>
+        </div>
+        <span>You</span>
+      </div>
+      <div class="share-card-vs">≈</div>
+      <div class="share-card-photo-box">
+        <img id="shareCardMatchPhoto" alt="Matched caricature">
+        <span id="shareCardMatchName2"></span>
+      </div>
+    </div>
+    <div id="shareCardBadges"></div>
+    <div id="shareCardTier"></div>
+    <p class="share-disclaimer">AI-generated caricature, not a real photograph. For entertainment only; no affiliation or endorsement.</p>
+    <!-- 저장한 이미지에도 "나 vs 매칭 인물"의 육각 레이더 차트가 담기도록 추가 -->
+    <div id="shareCardRadar"></div>
+    <!-- 부위별 상세 분석(이마·눈매·코 등)이 이미지 안에 빠져있으면 저장 이미지만 보고는
+         "이게 뭘 보여주는 결과인지" 절반만 전달된다는 피드백 — 이 콘텐츠가 이 서비스를
+         궁금하게 만드는 핵심이므로 온페이지 카드와 동일한 내용을 그대로 포함한다. -->
+    <div id="shareCardReadings"></div>
+    <!-- 주소만 덜렁 있으면 "이게 뭐하는 사이트인지" 몰라서 긴 URL을 직접 쳐서 들어가 볼
+         동기가 안 생긴다는 피드백 — 한 줄 소개를 주소 위에 붙인다. -->
+    <div class="share-card-cta">
+      <p class="share-card-cta-hook">Who is your billionaire lookalike?</p>
+      <p class="share-card-cta-url">Inspired by Korean gwansang · Just for fun</p>
+    </div>
+  </div>
+
+  <footer><div class="footer-text"><p id="pText">Billionaire Face Match · Just for fun</p></div></footer>
+  <!-- 로딩/순간이동 오버레이 -->
+  <div id="loadingModal" class="modal">
+    <div id="portalFlash"></div>
+    <div class="modal-content">
+      <h2 id="processTitle">Finding your match</h2>
+      <p id="loadingStatus">Comparing facial proportions…</p><br>
+      <div class="progress-bar">
+        <div id="progressBarInner" class="progress-bar-inner"></div>
+      </div>
+    </div>
+  </div>
+  <!-- 알림 토스트 (브라우저 기본 alert() 대신 테마에 맞춘 알림) -->
+  <div id="toast" role="status" aria-live="polite"></div>
+</body>
+
+</html>

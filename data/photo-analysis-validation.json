@@ -1,0 +1,15 @@
+{
+  "checkedAt": "2026-09-12T10:04:38.988Z",
+  "method": "local-source-photos-by-export-order",
+  "suppliedPhotos": 100,
+  "displayCaricatures": 100,
+  "candidates": 100,
+  "passed": 100,
+  "missingPhotos": [],
+  "failures": [
+    {
+      "id": "john-mars",
+      "error": "Source photo found 0 faces; used caricature fallback"
+    }
+  ]
+}

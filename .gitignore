@@ -1,0 +1,5 @@
+.DS_Store
+__pycache__/
+*.py[cod]
+# Local-only crawl snapshots and source photographs used for preprocessing.
+assets/crawled/

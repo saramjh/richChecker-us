@@ -1,0 +1,2602 @@
+[
+  {
+    "id": "elon-musk",
+    "name": "Elon Musk",
+    "title": "Tesla, SpaceX",
+    "rank": 1,
+    "position": 1,
+    "exportOrder": 1,
+    "netWorth": "$929.40B",
+    "netWorthUsd": 929396684000,
+    "industries": [
+      "Technology"
+    ],
+    "countryOfCitizenship": "United States",
+    "achievement": "Known for wealth from Tesla, SpaceX.",
+    "image": "assets/people/caricature-sheet/001-elon-musk.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/elon-musk/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 1,
+      "row": 1,
+      "column": 1
+    }
+  },
+  {
+    "id": "larry-page",
+    "name": "Larry Page",
+    "title": "Google",
+    "rank": 2,
+    "position": 2,
+    "exportOrder": 2,
+    "netWorth": "$277.95B",
+    "netWorthUsd": 277949926000,
+    "industries": [
+      "Technology"
+    ],
+    "countryOfCitizenship": "United States",
+    "achievement": "Known for wealth from Google.",
+    "image": "assets/people/caricature-sheet/002-larry-page.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/larry-page/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 2,
+      "row": 1,
+      "column": 2
+    }
+  },
+  {
+    "id": "michael-dell",
+    "name": "Michael Dell",
+    "title": "Dell Technologies",
+    "rank": 3,
+    "position": 3,
+    "exportOrder": 3,
+    "netWorth": "$276.49B",
+    "netWorthUsd": 276487214000,
+    "industries": [
+      "Technology"
+    ],
+    "countryOfCitizenship": "United States",
+    "achievement": "Known for wealth from Dell Technologies.",
+    "image": "assets/people/caricature-sheet/003-michael-dell.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/michael-dell/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 3,
+      "row": 1,
+      "column": 3
+    }
+  },
+  {
+    "id": "jeff-bezos",
+    "name": "Jeff Bezos",
+    "title": "Amazon",
+    "rank": 4,
+    "position": 4,
+    "exportOrder": 4,
+    "netWorth": "$273.04B",
+    "netWorthUsd": 273042977000,
+    "industries": [
+      "Technology"
+    ],
+    "countryOfCitizenship": "United States",
+    "achievement": "Known for wealth from Amazon.",
+    "image": "assets/people/caricature-sheet/004-jeff-bezos.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/jeff-bezos/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 4,
+      "row": 1,
+      "column": 4
+    }
+  },
+  {
+    "id": "sergey-brin",
+    "name": "Sergey Brin",
+    "title": "Google",
+    "rank": 5,
+    "position": 5,
+    "exportOrder": 5,
+    "netWorth": "$255.80B",
+    "netWorthUsd": 255800249000,
+    "industries": [
+      "Technology"
+    ],
+    "countryOfCitizenship": "United States",
+    "achievement": "Known for wealth from Google.",
+    "image": "assets/people/caricature-sheet/005-sergey-brin.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/sergey-brin/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 5,
+      "row": 1,
+      "column": 5
+    }
+  },
+  {
+    "id": "mark-zuckerberg",
+    "name": "Mark Zuckerberg",
+    "title": "Facebook",
+    "rank": 6,
+    "position": 6,
+    "exportOrder": 6,
+    "netWorth": "$222.56B",
+    "netWorthUsd": 222561363000,
+    "industries": [
+      "Technology"
+    ],
+    "countryOfCitizenship": "United States",
+    "achievement": "Known for wealth from Facebook.",
+    "image": "assets/people/caricature-sheet/006-mark-zuckerberg.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/mark-zuckerberg/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 6,
+      "row": 1,
+      "column": 6
+    }
+  },
+  {
+    "id": "larry-ellison",
+    "name": "Larry Ellison",
+    "title": "Oracle",
+    "rank": 7,
+    "position": 7,
+    "exportOrder": 7,
+    "netWorth": "$195.40B",
+    "netWorthUsd": 195401476000,
+    "industries": [
+      "Technology"
+    ],
+    "countryOfCitizenship": "United States",
+    "achievement": "Known for wealth from Oracle.",
+    "image": "assets/people/caricature-sheet/007-larry-ellison.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/larry-ellison/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 7,
+      "row": 1,
+      "column": 7
+    }
+  },
+  {
+    "id": "jensen-huang",
+    "name": "Jensen Huang",
+    "title": "Semiconductors",
+    "rank": 8,
+    "position": 8,
+    "exportOrder": 8,
+    "netWorth": "$189.12B",
+    "netWorthUsd": 189120215000,
+    "industries": [
+      "Technology"
+    ],
+    "countryOfCitizenship": "United States",
+    "achievement": "Known for wealth from Semiconductors.",
+    "image": "assets/people/caricature-sheet/008-jensen-huang.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/jensen-huang/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 8,
+      "row": 1,
+      "column": 8
+    }
+  },
+  {
+    "id": "steve-ballmer",
+    "name": "Steve Ballmer",
+    "title": "Microsoft",
+    "rank": 9,
+    "position": 9,
+    "exportOrder": 9,
+    "netWorth": "$155.05B",
+    "netWorthUsd": 155048581000,
+    "industries": [
+      "Technology"
+    ],
+    "countryOfCitizenship": "United States",
+    "achievement": "Known for wealth from Microsoft.",
+    "image": "assets/people/caricature-sheet/009-steve-ballmer.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/steve-ballmer/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 9,
+      "row": 1,
+      "column": 9
+    }
+  },
+  {
+    "id": "warren-buffett",
+    "name": "Warren Buffett",
+    "title": "Berkshire Hathaway",
+    "rank": 10,
+    "position": 10,
+    "exportOrder": 10,
+    "netWorth": "$145.09B",
+    "netWorthUsd": 145086233000,
+    "industries": [
+      "Finance & Investments"
+    ],
+    "countryOfCitizenship": "United States",
+    "achievement": "Known for wealth from Berkshire Hathaway.",
+    "image": "assets/people/caricature-sheet/010-warren-buffett.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/warren-buffett/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 10,
+      "row": 1,
+      "column": 10
+    }
+  },
+  {
+    "id": "amancio-ortega",
+    "name": "Amancio Ortega",
+    "title": "Zara",
+    "rank": 11,
+    "position": 11,
+    "exportOrder": 11,
+    "netWorth": "$139.73B",
+    "netWorthUsd": 139725855000,
+    "industries": [
+      "Fashion & Retail"
+    ],
+    "countryOfCitizenship": "Spain",
+    "achievement": "Known for wealth from Zara.",
+    "image": "assets/people/caricature-sheet/011-amancio-ortega.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/amancio-ortega/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 11,
+      "row": 2,
+      "column": 1
+    }
+  },
+  {
+    "id": "rob-walton-family",
+    "name": "Rob Walton & family",
+    "title": "Walmart",
+    "rank": 12,
+    "position": 12,
+    "exportOrder": 12,
+    "netWorth": "$131.59B",
+    "netWorthUsd": 131588062000,
+    "industries": [
+      "Fashion & Retail"
+    ],
+    "countryOfCitizenship": "United States",
+    "achievement": "Known for wealth from Walmart.",
+    "image": "assets/people/caricature-sheet/012-rob-walton-family.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/rob-walton/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 12,
+      "row": 2,
+      "column": 2
+    }
+  },
+  {
+    "id": "bernard-arnault-family",
+    "name": "Bernard Arnault & family",
+    "title": "LVMH",
+    "rank": 13,
+    "position": 13,
+    "exportOrder": 13,
+    "netWorth": "$130.46B",
+    "netWorthUsd": 130460391000,
+    "industries": [
+      "Fashion & Retail"
+    ],
+    "countryOfCitizenship": "France",
+    "achievement": "Known for wealth from LVMH.",
+    "image": "assets/people/caricature-sheet/013-bernard-arnault-family.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/bernard-arnault/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 13,
+      "row": 2,
+      "column": 3
+    }
+  },
+  {
+    "id": "jim-walton-family",
+    "name": "Jim Walton & family",
+    "title": "Walmart",
+    "rank": 14,
+    "position": 14,
+    "exportOrder": 14,
+    "netWorth": "$128.40B",
+    "netWorthUsd": 128398980000,
+    "industries": [
+      "Fashion & Retail"
+    ],
+    "countryOfCitizenship": "United States",
+    "achievement": "Known for wealth from Walmart.",
+    "image": "assets/people/caricature-sheet/014-jim-walton-family.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/jim-walton/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 14,
+      "row": 2,
+      "column": 4
+    }
+  },
+  {
+    "id": "carlos-slim-helu-family",
+    "name": "Carlos Slim Helu & family",
+    "title": "Telecom",
+    "rank": 15,
+    "position": 15,
+    "exportOrder": 15,
+    "netWorth": "$122.10B",
+    "netWorthUsd": 122102174000,
+    "industries": [
+      "Telecom"
+    ],
+    "countryOfCitizenship": "Mexico",
+    "achievement": "Known for wealth from Telecom.",
+    "image": "assets/people/caricature-sheet/015-carlos-slim-helu-family.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/carlos-slim-helu/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 15,
+      "row": 2,
+      "column": 5
+    }
+  },
+  {
+    "id": "alice-walton",
+    "name": "Alice Walton",
+    "title": "Walmart",
+    "rank": 16,
+    "position": 16,
+    "exportOrder": 16,
+    "netWorth": "$118.22B",
+    "netWorthUsd": 118221819000,
+    "industries": [
+      "Fashion & Retail"
+    ],
+    "countryOfCitizenship": "United States",
+    "achievement": "Known for wealth from Walmart.",
+    "image": "assets/people/caricature-sheet/016-alice-walton.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/alice-walton/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 16,
+      "row": 2,
+      "column": 6
+    }
+  },
+  {
+    "id": "bill-gates",
+    "name": "Bill Gates",
+    "title": "Microsoft",
+    "rank": 17,
+    "position": 17,
+    "exportOrder": 17,
+    "netWorth": "$115.14B",
+    "netWorthUsd": 115142894000,
+    "industries": [
+      "Technology"
+    ],
+    "countryOfCitizenship": "United States",
+    "achievement": "Known for wealth from Microsoft.",
+    "image": "assets/people/caricature-sheet/017-bill-gates.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/bill-gates/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 17,
+      "row": 2,
+      "column": 7
+    }
+  },
+  {
+    "id": "changpeng-zhao",
+    "name": "Changpeng Zhao",
+    "title": "Cryptocurrency exchange",
+    "rank": 18,
+    "position": 18,
+    "exportOrder": 18,
+    "netWorth": "$114.61B",
+    "netWorthUsd": 114611309000,
+    "industries": [
+      "Finance & Investments"
+    ],
+    "countryOfCitizenship": "Canada",
+    "achievement": "Known for wealth from Cryptocurrency exchange.",
+    "image": "assets/people/caricature-sheet/018-changpeng-zhao.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/changpeng-zhao/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 18,
+      "row": 2,
+      "column": 8
+    }
+  },
+  {
+    "id": "thomas-peterffy",
+    "name": "Thomas Peterffy",
+    "title": "Discount brokerage",
+    "rank": 19,
+    "position": 19,
+    "exportOrder": 19,
+    "netWorth": "$105.79B",
+    "netWorthUsd": 105792497000,
+    "industries": [
+      "Finance & Investments"
+    ],
+    "countryOfCitizenship": "United States",
+    "achievement": "Known for wealth from Discount brokerage.",
+    "image": "assets/people/caricature-sheet/019-thomas-peterffy.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/thomas-peterffy/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 19,
+      "row": 2,
+      "column": 9
+    }
+  },
+  {
+    "id": "michael-bloomberg",
+    "name": "Michael Bloomberg",
+    "title": "Bloomberg LP",
+    "rank": 20,
+    "position": 20,
+    "exportOrder": 20,
+    "netWorth": "$94.92B",
+    "netWorthUsd": 94920000000,
+    "industries": [
+      "Finance & Investments"
+    ],
+    "countryOfCitizenship": "United States",
+    "achievement": "Known for wealth from Bloomberg LP.",
+    "image": "assets/people/caricature-sheet/020-michael-bloomberg.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/michael-bloomberg/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 20,
+      "row": 2,
+      "column": 10
+    }
+  },
+  {
+    "id": "francoise-bettencourt-meyers-family",
+    "name": "Francoise Bettencourt Meyers & family",
+    "title": "L'Oréal",
+    "rank": 21,
+    "position": 21,
+    "exportOrder": 21,
+    "netWorth": "$94.83B",
+    "netWorthUsd": 94834215000,
+    "industries": [
+      "Fashion & Retail"
+    ],
+    "countryOfCitizenship": "France",
+    "achievement": "Known for wealth from L'Oréal.",
+    "image": "assets/people/caricature-sheet/021-francoise-bettencourt-meyers-family.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/francoise-bettencourt-meyers/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 21,
+      "row": 3,
+      "column": 1
+    }
+  },
+  {
+    "id": "giancarlo-devasini",
+    "name": "Giancarlo Devasini",
+    "title": "Cryptocurrency",
+    "rank": 22,
+    "position": 22,
+    "exportOrder": 22,
+    "netWorth": "$89.30B",
+    "netWorthUsd": 89300000000,
+    "industries": [
+      "Finance & Investments"
+    ],
+    "countryOfCitizenship": "Italy",
+    "achievement": "Known for wealth from Cryptocurrency.",
+    "image": "assets/people/caricature-sheet/022-giancarlo-devasini.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/giancarlo-devasini/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 22,
+      "row": 3,
+      "column": 2
+    }
+  },
+  {
+    "id": "mukesh-ambani",
+    "name": "Mukesh Ambani",
+    "title": "Diversified",
+    "rank": 23,
+    "position": 23,
+    "exportOrder": 23,
+    "netWorth": "$86.59B",
+    "netWorthUsd": 86587664000,
+    "industries": [
+      "Diversified"
+    ],
+    "countryOfCitizenship": "India",
+    "achievement": "Known for wealth from Diversified.",
+    "image": "assets/people/caricature-sheet/023-mukesh-ambani.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/mukesh-ambani/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 23,
+      "row": 3,
+      "column": 3
+    }
+  },
+  {
+    "id": "julia-koch-family",
+    "name": "Julia Koch & family",
+    "title": "Koch, Inc.",
+    "rank": 24,
+    "position": 24,
+    "exportOrder": 24,
+    "netWorth": "$84.63B",
+    "netWorthUsd": 84627000000,
+    "industries": [
+      "Diversified"
+    ],
+    "countryOfCitizenship": "United States",
+    "achievement": "Known for wealth from Koch, Inc..",
+    "image": "assets/people/caricature-sheet/024-julia-koch-family.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/julia-koch/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 24,
+      "row": 3,
+      "column": 4
+    }
+  },
+  {
+    "id": "zhang-yiming",
+    "name": "Zhang Yiming",
+    "title": "TikTok",
+    "rank": 25,
+    "position": 25,
+    "exportOrder": 25,
+    "netWorth": "$84.00B",
+    "netWorthUsd": 84000000000,
+    "industries": [
+      "Technology"
+    ],
+    "countryOfCitizenship": "China",
+    "achievement": "Known for wealth from TikTok.",
+    "image": "assets/people/caricature-sheet/025-zhang-yiming.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/zhang-yiming/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 25,
+      "row": 3,
+      "column": 5
+    }
+  },
+  {
+    "id": "gautam-adani",
+    "name": "Gautam Adani",
+    "title": "Infrastructure, commodities",
+    "rank": 26,
+    "position": 26,
+    "exportOrder": 26,
+    "netWorth": "$82.60B",
+    "netWorthUsd": 82599387000,
+    "industries": [
+      "Diversified"
+    ],
+    "countryOfCitizenship": "India",
+    "achievement": "Known for wealth from Infrastructure, commodities.",
+    "image": "assets/people/caricature-sheet/026-gautam-adani.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/gautam-adani-1/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 26,
+      "row": 3,
+      "column": 6
+    }
+  },
+  {
+    "id": "masayoshi-son",
+    "name": "Masayoshi Son",
+    "title": "Telecom, Investments",
+    "rank": 27,
+    "position": 27,
+    "exportOrder": 27,
+    "netWorth": "$80.27B",
+    "netWorthUsd": 80265562000,
+    "industries": [
+      "Finance & Investments"
+    ],
+    "countryOfCitizenship": "Japan",
+    "achievement": "Known for wealth from Telecom, Investments.",
+    "image": "assets/people/caricature-sheet/027-masayoshi-son.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/masayoshi-son/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 27,
+      "row": 3,
+      "column": 7
+    }
+  },
+  {
+    "id": "jeff-yass",
+    "name": "Jeff Yass",
+    "title": "Trading, investments",
+    "rank": 28,
+    "position": 28,
+    "exportOrder": 28,
+    "netWorth": "$77.79B",
+    "netWorthUsd": 77790000000,
+    "industries": [
+      "Finance & Investments"
+    ],
+    "countryOfCitizenship": "United States",
+    "achievement": "Known for wealth from Trading, investments.",
+    "image": "assets/people/caricature-sheet/028-jeff-yass.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/jeff-yass/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 28,
+      "row": 3,
+      "column": 8
+    }
+  },
+  {
+    "id": "charles-koch-family",
+    "name": "Charles Koch & family",
+    "title": "Koch, Inc.",
+    "rank": 29,
+    "position": 29,
+    "exportOrder": 29,
+    "netWorth": "$76.94B",
+    "netWorthUsd": 76942000000,
+    "industries": [
+      "Diversified"
+    ],
+    "countryOfCitizenship": "United States",
+    "achievement": "Known for wealth from Koch, Inc..",
+    "image": "assets/people/caricature-sheet/029-charles-koch-family.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/charles-koch/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 29,
+      "row": 3,
+      "column": 9
+    }
+  },
+  {
+    "id": "german-larrea-mota-velasco-family",
+    "name": "Germán Larrea Mota Velasco & family",
+    "title": "Mining",
+    "rank": 30,
+    "position": 30,
+    "exportOrder": 30,
+    "netWorth": "$68.27B",
+    "netWorthUsd": 68266270000,
+    "industries": [
+      "Metals & Mining"
+    ],
+    "countryOfCitizenship": "Mexico",
+    "achievement": "Known for wealth from Mining.",
+    "image": "assets/people/caricature-sheet/030-german-larrea-mota-velasco-family.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/german-larrea-mota-velasco/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 30,
+      "row": 3,
+      "column": 10
+    }
+  },
+  {
+    "id": "dieter-schwarz",
+    "name": "Dieter Schwarz",
+    "title": "Retail",
+    "rank": 31,
+    "position": 31,
+    "exportOrder": 31,
+    "netWorth": "$60.96B",
+    "netWorthUsd": 60963934000,
+    "industries": [
+      "Fashion & Retail"
+    ],
+    "countryOfCitizenship": "Germany",
+    "achievement": "Known for wealth from Retail.",
+    "image": "assets/people/caricature-sheet/031-dieter-schwarz.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/dieter-schwarz/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 31,
+      "row": 4,
+      "column": 1
+    }
+  },
+  {
+    "id": "ken-griffin",
+    "name": "Ken Griffin",
+    "title": "Hedge funds",
+    "rank": 32,
+    "position": 32,
+    "exportOrder": 32,
+    "netWorth": "$60.51B",
+    "netWorthUsd": 60507595000,
+    "industries": [
+      "Finance & Investments"
+    ],
+    "countryOfCitizenship": "United States",
+    "achievement": "Known for wealth from Hedge funds.",
+    "image": "assets/people/caricature-sheet/032-ken-griffin.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/ken-griffin/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 32,
+      "row": 4,
+      "column": 2
+    }
+  },
+  {
+    "id": "tadashi-yanai-family",
+    "name": "Tadashi Yanai & family",
+    "title": "Fashion retail",
+    "rank": 33,
+    "position": 33,
+    "exportOrder": 33,
+    "netWorth": "$60.20B",
+    "netWorthUsd": 60197516000,
+    "industries": [
+      "Fashion & Retail"
+    ],
+    "countryOfCitizenship": "Japan",
+    "achievement": "Known for wealth from Fashion retail.",
+    "image": "assets/people/caricature-sheet/033-tadashi-yanai-family.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/tadashi-yanai/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 33,
+      "row": 4,
+      "column": 3
+    }
+  },
+  {
+    "id": "zhong-shanshan",
+    "name": "Zhong Shanshan",
+    "title": "Beverages, pharmaceuticals",
+    "rank": 34,
+    "position": 34,
+    "exportOrder": 34,
+    "netWorth": "$58.31B",
+    "netWorthUsd": 58309722000,
+    "industries": [
+      "Food & Beverage"
+    ],
+    "countryOfCitizenship": "China",
+    "achievement": "Known for wealth from Beverages, pharmaceuticals.",
+    "image": "assets/people/caricature-sheet/034-zhong-shanshan.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/zhong-shanshan/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 34,
+      "row": 4,
+      "column": 4
+    }
+  },
+  {
+    "id": "robin-zeng",
+    "name": "Robin Zeng",
+    "title": "Batteries",
+    "rank": 35,
+    "position": 35,
+    "exportOrder": 35,
+    "netWorth": "$53.81B",
+    "netWorthUsd": 53808082000,
+    "industries": [
+      "Energy"
+    ],
+    "countryOfCitizenship": "Hong Kong",
+    "achievement": "Known for wealth from Batteries.",
+    "image": "assets/people/caricature-sheet/035-robin-zeng.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/robin-zeng/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 35,
+      "row": 4,
+      "column": 5
+    }
+  },
+  {
+    "id": "jacqueline-mars",
+    "name": "Jacqueline Mars",
+    "title": "Candy, pet food",
+    "rank": 36,
+    "position": 36,
+    "exportOrder": 36,
+    "netWorth": "$50.35B",
+    "netWorthUsd": 50348000000,
+    "industries": [
+      "Food & Beverage"
+    ],
+    "countryOfCitizenship": "United States",
+    "achievement": "Known for wealth from Candy, pet food.",
+    "image": "assets/people/caricature-sheet/036-jacqueline-mars.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/jacqueline-mars/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 36,
+      "row": 4,
+      "column": 6
+    }
+  },
+  {
+    "id": "john-mars",
+    "name": "John Mars",
+    "title": "Candy, pet food",
+    "rank": 36,
+    "position": 37,
+    "exportOrder": 37,
+    "netWorth": "$50.35B",
+    "netWorthUsd": 50348000000,
+    "industries": [
+      "Food & Beverage"
+    ],
+    "countryOfCitizenship": "United States",
+    "achievement": "Known for wealth from Candy, pet food.",
+    "image": "assets/people/caricature-sheet/037-john-mars.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/john-mars/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 37,
+      "row": 4,
+      "column": 7
+    }
+  },
+  {
+    "id": "li-ka-shing",
+    "name": "Li Ka-shing",
+    "title": "Diversified",
+    "rank": 38,
+    "position": 38,
+    "exportOrder": 38,
+    "netWorth": "$49.74B",
+    "netWorthUsd": 49739309000,
+    "industries": [
+      "Diversified"
+    ],
+    "countryOfCitizenship": "Hong Kong",
+    "achievement": "Known for wealth from Diversified.",
+    "image": "assets/people/caricature-sheet/038-li-ka-shing.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/li-ka-shing/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 38,
+      "row": 4,
+      "column": 8
+    }
+  },
+  {
+    "id": "iris-fontbona-family",
+    "name": "Iris Fontbona & family",
+    "title": "Mining",
+    "rank": 39,
+    "position": 39,
+    "exportOrder": 39,
+    "netWorth": "$48.46B",
+    "netWorthUsd": 48456996000,
+    "industries": [
+      "Metals & Mining"
+    ],
+    "countryOfCitizenship": "Chile",
+    "achievement": "Known for wealth from Mining.",
+    "image": "assets/people/caricature-sheet/039-iris-fontbona-family.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/iris-fontbona/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 39,
+      "row": 4,
+      "column": 9
+    }
+  },
+  {
+    "id": "giovanni-ferrero",
+    "name": "Giovanni Ferrero",
+    "title": "Nutella, chocolates",
+    "rank": 40,
+    "position": 40,
+    "exportOrder": 40,
+    "netWorth": "$48.02B",
+    "netWorthUsd": 48015116000,
+    "industries": [
+      "Food & Beverage"
+    ],
+    "countryOfCitizenship": "Italy",
+    "achievement": "Known for wealth from Nutella, chocolates.",
+    "image": "assets/people/caricature-sheet/040-giovanni-ferrero.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/giovanni-ferrero/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 40,
+      "row": 4,
+      "column": 10
+    }
+  },
+  {
+    "id": "ma-huateng",
+    "name": "Ma Huateng",
+    "title": "Online games",
+    "rank": 41,
+    "position": 41,
+    "exportOrder": 41,
+    "netWorth": "$46.34B",
+    "netWorthUsd": 46338461000,
+    "industries": [
+      "Technology"
+    ],
+    "countryOfCitizenship": "China",
+    "achievement": "Known for wealth from Online games.",
+    "image": "assets/people/caricature-sheet/041-ma-huateng.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/ma-huateng/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 41,
+      "row": 5,
+      "column": 1
+    }
+  },
+  {
+    "id": "gianluigi-aponte",
+    "name": "Gianluigi Aponte",
+    "title": "Shipping",
+    "rank": 42,
+    "position": 42,
+    "exportOrder": 42,
+    "netWorth": "$45.42B",
+    "netWorthUsd": 45418356000,
+    "industries": [
+      "Logistics"
+    ],
+    "countryOfCitizenship": "Switzerland",
+    "achievement": "Known for wealth from Shipping.",
+    "image": "assets/people/caricature-sheet/042-gianluigi-aponte.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/gianluigi-aponte/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 42,
+      "row": 5,
+      "column": 2
+    }
+  },
+  {
+    "id": "rafaela-aponte-diamant",
+    "name": "Rafaela Aponte-Diamant",
+    "title": "Shipping",
+    "rank": 42,
+    "position": 43,
+    "exportOrder": 43,
+    "netWorth": "$45.42B",
+    "netWorthUsd": 45418356000,
+    "industries": [
+      "Logistics"
+    ],
+    "countryOfCitizenship": "Switzerland",
+    "achievement": "Known for wealth from Shipping.",
+    "image": "assets/people/caricature-sheet/043-rafaela-aponte-diamant.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/rafaela-aponte-diamant/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 43,
+      "row": 5,
+      "column": 3
+    }
+  },
+  {
+    "id": "mark-mateschitz",
+    "name": "Mark Mateschitz",
+    "title": "Red Bull",
+    "rank": 44,
+    "position": 44,
+    "exportOrder": 44,
+    "netWorth": "$45.09B",
+    "netWorthUsd": 45094186000,
+    "industries": [
+      "Food & Beverage"
+    ],
+    "countryOfCitizenship": "Austria",
+    "achievement": "Known for wealth from Red Bull.",
+    "image": "assets/people/caricature-sheet/044-mark-mateschitz.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/mark-mateschitz/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 44,
+      "row": 5,
+      "column": 4
+    }
+  },
+  {
+    "id": "stephen-schwarzman",
+    "name": "Stephen Schwarzman",
+    "title": "Investments",
+    "rank": 45,
+    "position": 45,
+    "exportOrder": 45,
+    "netWorth": "$44.51B",
+    "netWorthUsd": 44513473000,
+    "industries": [
+      "Finance & Investments"
+    ],
+    "countryOfCitizenship": "United States",
+    "achievement": "Known for wealth from Investments.",
+    "image": "assets/people/caricature-sheet/045-stephen-schwarzman.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/stephen-schwarzman/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 45,
+      "row": 5,
+      "column": 5
+    }
+  },
+  {
+    "id": "lukas-walton",
+    "name": "Lukas Walton",
+    "title": "Walmart ",
+    "rank": 46,
+    "position": 46,
+    "exportOrder": 46,
+    "netWorth": "$44.39B",
+    "netWorthUsd": 44387108000,
+    "industries": [
+      "Fashion & Retail"
+    ],
+    "countryOfCitizenship": "United States",
+    "achievement": "Known for wealth from Walmart .",
+    "image": "assets/people/caricature-sheet/046-lukas-walton.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/lukas-walton/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 46,
+      "row": 5,
+      "column": 6
+    }
+  },
+  {
+    "id": "andrea-pignataro",
+    "name": "Andrea Pignataro",
+    "title": "Financial software",
+    "rank": 47,
+    "position": 47,
+    "exportOrder": 47,
+    "netWorth": "$41.98B",
+    "netWorthUsd": 41979651000,
+    "industries": [
+      "Finance & Investments"
+    ],
+    "countryOfCitizenship": "Italy",
+    "achievement": "Known for wealth from Financial software.",
+    "image": "assets/people/caricature-sheet/047-andrea-pignataro.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/andrea-pignataro/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 47,
+      "row": 5,
+      "column": 7
+    }
+  },
+  {
+    "id": "abigail-johnson",
+    "name": "Abigail Johnson",
+    "title": "Fidelity",
+    "rank": 48,
+    "position": 48,
+    "exportOrder": 48,
+    "netWorth": "$41.64B",
+    "netWorthUsd": 41635256000,
+    "industries": [
+      "Finance & Investments"
+    ],
+    "countryOfCitizenship": "United States",
+    "achievement": "Known for wealth from Fidelity.",
+    "image": "assets/people/caricature-sheet/048-abigail-johnson.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/abigail-johnson/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 48,
+      "row": 5,
+      "column": 8
+    }
+  },
+  {
+    "id": "andreas-von-bechtolsheim-family",
+    "name": "Andreas von Bechtolsheim & family",
+    "title": "Google",
+    "rank": 49,
+    "position": 49,
+    "exportOrder": 49,
+    "netWorth": "$40.18B",
+    "netWorthUsd": 40179262000,
+    "industries": [
+      "Technology"
+    ],
+    "countryOfCitizenship": "Germany",
+    "achievement": "Known for wealth from Google.",
+    "image": "assets/people/caricature-sheet/049-andreas-von-bechtolsheim-family.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/andreas-von-bechtolsheim/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 49,
+      "row": 5,
+      "column": 9
+    }
+  },
+  {
+    "id": "liang-wenfeng",
+    "name": "Liang Wenfeng",
+    "title": "AI, hedge fund",
+    "rank": 50,
+    "position": 50,
+    "exportOrder": 50,
+    "netWorth": "$39.90B",
+    "netWorthUsd": 39901661000,
+    "industries": [
+      "Technology"
+    ],
+    "countryOfCitizenship": "China",
+    "achievement": "Known for wealth from AI, hedge fund.",
+    "image": "assets/people/caricature-sheet/050-liang-wenfeng.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/liang-wenfeng/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 50,
+      "row": 5,
+      "column": 10
+    }
+  },
+  {
+    "id": "savitri-jindal-family",
+    "name": "Savitri Jindal & family",
+    "title": "Steel",
+    "rank": 51,
+    "position": 51,
+    "exportOrder": 51,
+    "netWorth": "$39.83B",
+    "netWorthUsd": 39825529000,
+    "industries": [
+      "Metals & Mining"
+    ],
+    "countryOfCitizenship": "India",
+    "achievement": "Known for wealth from Steel.",
+    "image": "assets/people/caricature-sheet/051-savitri-jindal-family.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/savitri-jindal/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 51,
+      "row": 6,
+      "column": 1
+    }
+  },
+  {
+    "id": "alain-wertheimer",
+    "name": "Alain Wertheimer",
+    "title": "Chanel",
+    "rank": 52,
+    "position": 52,
+    "exportOrder": 52,
+    "netWorth": "$39.42B",
+    "netWorthUsd": 39420395000,
+    "industries": [
+      "Fashion & Retail"
+    ],
+    "countryOfCitizenship": "France",
+    "achievement": "Known for wealth from Chanel.",
+    "image": "assets/people/caricature-sheet/052-alain-wertheimer.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/alain-wertheimer/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 52,
+      "row": 6,
+      "column": 2
+    }
+  },
+  {
+    "id": "gerard-wertheimer",
+    "name": "Gerard Wertheimer",
+    "title": "Chanel",
+    "rank": 52,
+    "position": 53,
+    "exportOrder": 53,
+    "netWorth": "$39.42B",
+    "netWorthUsd": 39420395000,
+    "industries": [
+      "Fashion & Retail"
+    ],
+    "countryOfCitizenship": "France",
+    "achievement": "Known for wealth from Chanel.",
+    "image": "assets/people/caricature-sheet/053-gerard-wertheimer.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/gerard-wertheimer-1/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 53,
+      "row": 6,
+      "column": 3
+    }
+  },
+  {
+    "id": "william-ding",
+    "name": "William Ding",
+    "title": "Online games",
+    "rank": 54,
+    "position": 54,
+    "exportOrder": 54,
+    "netWorth": "$39.22B",
+    "netWorthUsd": 39221461000,
+    "industries": [
+      "Technology"
+    ],
+    "countryOfCitizenship": "China",
+    "achievement": "Known for wealth from Online games.",
+    "image": "assets/people/caricature-sheet/054-william-ding.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/william-ding/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 54,
+      "row": 6,
+      "column": 4
+    }
+  },
+  {
+    "id": "jean-louis-van-der-velde",
+    "name": "Jean-Louis van der Velde",
+    "title": "Cryptocurrency",
+    "rank": 55,
+    "position": 55,
+    "exportOrder": 55,
+    "netWorth": "$38.00B",
+    "netWorthUsd": 38000000000,
+    "industries": [
+      "Finance & Investments"
+    ],
+    "countryOfCitizenship": "Netherlands",
+    "achievement": "Known for wealth from Cryptocurrency.",
+    "image": "assets/people/caricature-sheet/055-jean-louis-van-der-velde.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/jean-louis-van-der-velde/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 55,
+      "row": 6,
+      "column": 5
+    }
+  },
+  {
+    "id": "paolo-ardoino",
+    "name": "Paolo Ardoino",
+    "title": "Cryptocurrency",
+    "rank": 55,
+    "position": 56,
+    "exportOrder": 56,
+    "netWorth": "$38.00B",
+    "netWorthUsd": 38000000000,
+    "industries": [
+      "Finance & Investments"
+    ],
+    "countryOfCitizenship": "Italy",
+    "achievement": "Known for wealth from Cryptocurrency.",
+    "image": "assets/people/caricature-sheet/056-paolo-ardoino.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/paolo-ardoino/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 56,
+      "row": 6,
+      "column": 6
+    }
+  },
+  {
+    "id": "pham-nhat-vuong",
+    "name": "Pham Nhat Vuong",
+    "title": "Diversified",
+    "rank": 57,
+    "position": 57,
+    "exportOrder": 57,
+    "netWorth": "$37.86B",
+    "netWorthUsd": 37860070000,
+    "industries": [
+      "Diversified"
+    ],
+    "countryOfCitizenship": "Vietnam",
+    "achievement": "Known for wealth from Diversified.",
+    "image": "assets/people/caricature-sheet/057-pham-nhat-vuong.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/pham-nhat-vuong/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 57,
+      "row": 6,
+      "column": 7
+    }
+  },
+  {
+    "id": "eric-schmidt",
+    "name": "Eric Schmidt",
+    "title": "Google",
+    "rank": 58,
+    "position": 58,
+    "exportOrder": 58,
+    "netWorth": "$37.82B",
+    "netWorthUsd": 37818418000,
+    "industries": [
+      "Technology"
+    ],
+    "countryOfCitizenship": "United States",
+    "achievement": "Known for wealth from Google.",
+    "image": "assets/people/caricature-sheet/058-eric-schmidt.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/eric-schmidt/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 58,
+      "row": 6,
+      "column": 8
+    }
+  },
+  {
+    "id": "he-xiangjian-family",
+    "name": "He Xiangjian & family",
+    "title": "Home appliances",
+    "rank": 59,
+    "position": 59,
+    "exportOrder": 59,
+    "netWorth": "$37.72B",
+    "netWorthUsd": 37720820000,
+    "industries": [
+      "Manufacturing"
+    ],
+    "countryOfCitizenship": "China",
+    "achievement": "Known for wealth from Home appliances.",
+    "image": "assets/people/caricature-sheet/059-he-xiangjian-family.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/he-xiangjian/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 59,
+      "row": 6,
+      "column": 9
+    }
+  },
+  {
+    "id": "alexey-mordashov-family",
+    "name": "Alexey Mordashov & family",
+    "title": "Steel, investments",
+    "rank": 60,
+    "position": 60,
+    "exportOrder": 60,
+    "netWorth": "$36.91B",
+    "netWorthUsd": 36907979000,
+    "industries": [
+      "Metals & Mining"
+    ],
+    "countryOfCitizenship": "Russia",
+    "achievement": "Known for wealth from Steel, investments.",
+    "image": "assets/people/caricature-sheet/060-alexey-mordashov-family.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/alexey-mordashov/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 60,
+      "row": 6,
+      "column": 10
+    }
+  },
+  {
+    "id": "marilyn-simons-family",
+    "name": "Marilyn Simons & family",
+    "title": "Hedge funds",
+    "rank": 61,
+    "position": 61,
+    "exportOrder": 61,
+    "netWorth": "$36.57B",
+    "netWorthUsd": 36573100000,
+    "industries": [
+      "Finance & Investments"
+    ],
+    "countryOfCitizenship": "United States",
+    "achievement": "Known for wealth from Hedge funds.",
+    "image": "assets/people/caricature-sheet/061-marilyn-simons-family.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/marilyn-simons/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 61,
+      "row": 7,
+      "column": 1
+    }
+  },
+  {
+    "id": "eduardo-saverin",
+    "name": "Eduardo Saverin",
+    "title": "Facebook",
+    "rank": 62,
+    "position": 62,
+    "exportOrder": 62,
+    "netWorth": "$35.97B",
+    "netWorthUsd": 35973285000,
+    "industries": [
+      "Technology"
+    ],
+    "countryOfCitizenship": "Brazil",
+    "achievement": "Known for wealth from Facebook.",
+    "image": "assets/people/caricature-sheet/062-eduardo-saverin.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/eduardo-saverin/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 62,
+      "row": 7,
+      "column": 2
+    }
+  },
+  {
+    "id": "eyal-ofer",
+    "name": "Eyal Ofer",
+    "title": "Real estate, shipping",
+    "rank": 63,
+    "position": 63,
+    "exportOrder": 63,
+    "netWorth": "$35.36B",
+    "netWorthUsd": 35356064000,
+    "industries": [
+      "Diversified"
+    ],
+    "countryOfCitizenship": "Israel",
+    "achievement": "Known for wealth from Real estate, shipping.",
+    "image": "assets/people/caricature-sheet/063-eyal-ofer.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/eyal-ofer/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 63,
+      "row": 7,
+      "column": 3
+    }
+  },
+  {
+    "id": "thomas-frist-jr-family",
+    "name": "Thomas Frist Jr & family",
+    "title": "Hospitals",
+    "rank": 64,
+    "position": 64,
+    "exportOrder": 64,
+    "netWorth": "$35.18B",
+    "netWorthUsd": 35176618000,
+    "industries": [
+      "Healthcare"
+    ],
+    "countryOfCitizenship": "United States",
+    "achievement": "Known for wealth from Hospitals.",
+    "image": "assets/people/caricature-sheet/064-thomas-frist-jr-family.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/thomas-frist-jr/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 64,
+      "row": 7,
+      "column": 4
+    }
+  },
+  {
+    "id": "len-blavatnik",
+    "name": "Len Blavatnik",
+    "title": "Music, chemicals",
+    "rank": 65,
+    "position": 65,
+    "exportOrder": 65,
+    "netWorth": "$35.06B",
+    "netWorthUsd": 35057690000,
+    "industries": [
+      "Diversified"
+    ],
+    "countryOfCitizenship": "United States",
+    "achievement": "Known for wealth from Music, chemicals.",
+    "image": "assets/people/caricature-sheet/065-len-blavatnik.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/len-blavatnik/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 65,
+      "row": 7,
+      "column": 5
+    }
+  },
+  {
+    "id": "peter-thiel",
+    "name": "Peter Thiel",
+    "title": "Facebook, investments",
+    "rank": 66,
+    "position": 66,
+    "exportOrder": 66,
+    "netWorth": "$35.02B",
+    "netWorthUsd": 35020432000,
+    "industries": [
+      "Finance & Investments"
+    ],
+    "countryOfCitizenship": "United States",
+    "achievement": "Known for wealth from Facebook, investments.",
+    "image": "assets/people/caricature-sheet/066-peter-thiel.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/peter-thiel/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 66,
+      "row": 7,
+      "column": 6
+    }
+  },
+  {
+    "id": "lakshmi-mittal",
+    "name": "Lakshmi Mittal",
+    "title": "Steel",
+    "rank": 67,
+    "position": 67,
+    "exportOrder": 67,
+    "netWorth": "$34.70B",
+    "netWorthUsd": 34699522000,
+    "industries": [
+      "Metals & Mining"
+    ],
+    "countryOfCitizenship": "India",
+    "achievement": "Known for wealth from Steel.",
+    "image": "assets/people/caricature-sheet/067-lakshmi-mittal.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/lakshmi-mittal/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 67,
+      "row": 7,
+      "column": 7
+    }
+  },
+  {
+    "id": "melinda-french-gates",
+    "name": "Melinda French Gates",
+    "title": "Microsoft",
+    "rank": 68,
+    "position": 68,
+    "exportOrder": 68,
+    "netWorth": "$34.50B",
+    "netWorthUsd": 34497564000,
+    "industries": [
+      "Technology"
+    ],
+    "countryOfCitizenship": "United States",
+    "achievement": "Known for wealth from Microsoft.",
+    "image": "assets/people/caricature-sheet/068-melinda-french-gates.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/melinda-french-gates/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 68,
+      "row": 7,
+      "column": 8
+    }
+  },
+  {
+    "id": "henry-samueli",
+    "name": "Henry Samueli",
+    "title": "Semiconductors",
+    "rank": 69,
+    "position": 69,
+    "exportOrder": 69,
+    "netWorth": "$34.16B",
+    "netWorthUsd": 34156938000,
+    "industries": [
+      "Technology"
+    ],
+    "countryOfCitizenship": "United States",
+    "achievement": "Known for wealth from Semiconductors.",
+    "image": "assets/people/caricature-sheet/069-henry-samueli.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/henry-samueli/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 69,
+      "row": 7,
+      "column": 9
+    }
+  },
+  {
+    "id": "jay-y-lee",
+    "name": "Jay Y. Lee",
+    "title": "Samsung",
+    "rank": 70,
+    "position": 70,
+    "exportOrder": 70,
+    "netWorth": "$33.86B",
+    "netWorthUsd": 33859664000,
+    "industries": [
+      "Technology"
+    ],
+    "countryOfCitizenship": "South Korea",
+    "achievement": "Known for wealth from Samsung.",
+    "image": "assets/people/caricature-sheet/070-jay-y-lee.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/jay-y-lee/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 70,
+      "row": 7,
+      "column": 10
+    }
+  },
+  {
+    "id": "miriam-adelson-family",
+    "name": "Miriam Adelson & family",
+    "title": "Casinos",
+    "rank": 71,
+    "position": 71,
+    "exportOrder": 71,
+    "netWorth": "$32.90B",
+    "netWorthUsd": 32902779000,
+    "industries": [
+      "Gambling & Casinos"
+    ],
+    "countryOfCitizenship": "United States",
+    "achievement": "Known for wealth from Casinos.",
+    "image": "assets/people/caricature-sheet/071-miriam-adelson-family.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/miriam-adelson/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 71,
+      "row": 8,
+      "column": 1
+    }
+  },
+  {
+    "id": "elaine-marshall-family",
+    "name": "Elaine Marshall & family",
+    "title": "Koch Inc.",
+    "rank": 72,
+    "position": 72,
+    "exportOrder": 72,
+    "netWorth": "$32.24B",
+    "netWorthUsd": 32239000000,
+    "industries": [
+      "Diversified"
+    ],
+    "countryOfCitizenship": "United States",
+    "achievement": "Known for wealth from Koch Inc..",
+    "image": "assets/people/caricature-sheet/072-elaine-marshall-family.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/elaine-marshall/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 72,
+      "row": 8,
+      "column": 2
+    }
+  },
+  {
+    "id": "john-tu",
+    "name": "John Tu",
+    "title": "Computer hardware",
+    "rank": 73,
+    "position": 73,
+    "exportOrder": 73,
+    "netWorth": "$32.17B",
+    "netWorthUsd": 32171478000,
+    "industries": [
+      "Technology"
+    ],
+    "countryOfCitizenship": "United States",
+    "achievement": "Known for wealth from Computer hardware.",
+    "image": "assets/people/caricature-sheet/073-john-tu.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/john-tu/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 73,
+      "row": 8,
+      "column": 3
+    }
+  },
+  {
+    "id": "david-sun",
+    "name": "David Sun",
+    "title": "Computer hardware",
+    "rank": 74,
+    "position": 74,
+    "exportOrder": 74,
+    "netWorth": "$32.15B",
+    "netWorthUsd": 32151000000,
+    "industries": [
+      "Technology"
+    ],
+    "countryOfCitizenship": "United States",
+    "achievement": "Known for wealth from Computer hardware.",
+    "image": "assets/people/caricature-sheet/074-david-sun.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/david-sun/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 74,
+      "row": 8,
+      "column": 4
+    }
+  },
+  {
+    "id": "idan-ofer",
+    "name": "Idan Ofer",
+    "title": "Shipping",
+    "rank": 75,
+    "position": 75,
+    "exportOrder": 75,
+    "netWorth": "$31.86B",
+    "netWorthUsd": 31864433000,
+    "industries": [
+      "Diversified"
+    ],
+    "countryOfCitizenship": "Israel",
+    "achievement": "Known for wealth from Shipping.",
+    "image": "assets/people/caricature-sheet/075-idan-ofer.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/idan-ofer/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 75,
+      "row": 8,
+      "column": 5
+    }
+  },
+  {
+    "id": "aliko-dangote",
+    "name": "Aliko Dangote",
+    "title": "Cement, sugar",
+    "rank": 76,
+    "position": 76,
+    "exportOrder": 76,
+    "netWorth": "$31.43B",
+    "netWorthUsd": 31433887000,
+    "industries": [
+      "Manufacturing"
+    ],
+    "countryOfCitizenship": "Nigeria",
+    "achievement": "Known for wealth from Cement, sugar.",
+    "image": "assets/people/caricature-sheet/076-aliko-dangote.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/aliko-dangote/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 76,
+      "row": 8,
+      "column": 6
+    }
+  },
+  {
+    "id": "lyndal-stephens-greth-family",
+    "name": "Lyndal Stephens Greth & family",
+    "title": "Oil & gas",
+    "rank": 77,
+    "position": 77,
+    "exportOrder": 77,
+    "netWorth": "$30.43B",
+    "netWorthUsd": 30431064000,
+    "industries": [
+      "Energy"
+    ],
+    "countryOfCitizenship": "United States",
+    "achievement": "Known for wealth from Oil & gas.",
+    "image": "assets/people/caricature-sheet/077-lyndal-stephens-greth-family.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/lyndal-stephens-greth/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 77,
+      "row": 8,
+      "column": 7
+    }
+  },
+  {
+    "id": "vladimir-potanin",
+    "name": "Vladimir Potanin",
+    "title": "Metals",
+    "rank": 78,
+    "position": 78,
+    "exportOrder": 78,
+    "netWorth": "$29.74B",
+    "netWorthUsd": 29740299000,
+    "industries": [
+      "Metals & Mining"
+    ],
+    "countryOfCitizenship": "Russia",
+    "achievement": "Known for wealth from Metals.",
+    "image": "assets/people/caricature-sheet/078-vladimir-potanin.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/vladimir-potanin/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 78,
+      "row": 8,
+      "column": 8
+    }
+  },
+  {
+    "id": "robert-pera",
+    "name": "Robert Pera",
+    "title": "Wireless networking",
+    "rank": 79,
+    "position": 79,
+    "exportOrder": 79,
+    "netWorth": "$29.62B",
+    "netWorthUsd": 29624850000,
+    "industries": [
+      "Technology"
+    ],
+    "countryOfCitizenship": "United States",
+    "achievement": "Known for wealth from Wireless networking.",
+    "image": "assets/people/caricature-sheet/079-robert-pera.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/robert-pera/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 79,
+      "row": 8,
+      "column": 9
+    }
+  },
+  {
+    "id": "vagit-alekperov",
+    "name": "Vagit Alekperov",
+    "title": "Oil",
+    "rank": 80,
+    "position": 80,
+    "exportOrder": 80,
+    "netWorth": "$29.48B",
+    "netWorthUsd": 29475064000,
+    "industries": [
+      "Energy"
+    ],
+    "countryOfCitizenship": "Russia",
+    "achievement": "Known for wealth from Oil.",
+    "image": "assets/people/caricature-sheet/080-vagit-alekperov.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/vagit-alekperov/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 80,
+      "row": 8,
+      "column": 10
+    }
+  },
+  {
+    "id": "reinhold-wuerth-family",
+    "name": "Reinhold Wuerth & family",
+    "title": "Fasteners",
+    "rank": 81,
+    "position": 81,
+    "exportOrder": 81,
+    "netWorth": "$28.62B",
+    "netWorthUsd": 28624778000,
+    "industries": [
+      "Manufacturing"
+    ],
+    "countryOfCitizenship": "Germany",
+    "achievement": "Known for wealth from Fasteners.",
+    "image": "assets/people/caricature-sheet/081-reinhold-wuerth-family.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/reinhold-wuerth/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 81,
+      "row": 9,
+      "column": 1
+    }
+  },
+  {
+    "id": "david-tepper",
+    "name": "David Tepper",
+    "title": "Hedge funds",
+    "rank": 82,
+    "position": 82,
+    "exportOrder": 82,
+    "netWorth": "$28.50B",
+    "netWorthUsd": 28504000000,
+    "industries": [
+      "Finance & Investments"
+    ],
+    "countryOfCitizenship": "United States",
+    "achievement": "Known for wealth from Hedge funds.",
+    "image": "assets/people/caricature-sheet/082-david-tepper.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/david-tepper/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 82,
+      "row": 9,
+      "column": 2
+    }
+  },
+  {
+    "id": "cyrus-poonawalla",
+    "name": "Cyrus Poonawalla",
+    "title": "Vaccines",
+    "rank": 83,
+    "position": 83,
+    "exportOrder": 83,
+    "netWorth": "$28.48B",
+    "netWorthUsd": 28477059000,
+    "industries": [
+      "Healthcare"
+    ],
+    "countryOfCitizenship": "India",
+    "achievement": "Known for wealth from Vaccines.",
+    "image": "assets/people/caricature-sheet/083-cyrus-poonawalla.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/cyrus-poonawalla/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 83,
+      "row": 9,
+      "column": 3
+    }
+  },
+  {
+    "id": "leonid-mikhelson-family",
+    "name": "Leonid Mikhelson & family",
+    "title": "Gas, chemicals",
+    "rank": 84,
+    "position": 84,
+    "exportOrder": 84,
+    "netWorth": "$28.30B",
+    "netWorthUsd": 28301370000,
+    "industries": [
+      "Energy"
+    ],
+    "countryOfCitizenship": "Russia",
+    "achievement": "Known for wealth from Gas, chemicals.",
+    "image": "assets/people/caricature-sheet/084-leonid-mikhelson-family.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/leonid-mikhelson/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 84,
+      "row": 9,
+      "column": 4
+    }
+  },
+  {
+    "id": "chen-tianshi",
+    "name": "Chen Tianshi",
+    "title": "Semiconductors",
+    "rank": 85,
+    "position": 85,
+    "exportOrder": 85,
+    "netWorth": "$27.80B",
+    "netWorthUsd": 27798172000,
+    "industries": [
+      "Technology"
+    ],
+    "countryOfCitizenship": "China",
+    "achievement": "Known for wealth from Semiconductors.",
+    "image": "assets/people/caricature-sheet/085-chen-tianshi.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/chen-tianshi/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 85,
+      "row": 9,
+      "column": 5
+    }
+  },
+  {
+    "id": "mackenzie-scott",
+    "name": "MacKenzie Scott",
+    "title": "Amazon",
+    "rank": 86,
+    "position": 86,
+    "exportOrder": 86,
+    "netWorth": "$27.79B",
+    "netWorthUsd": 27794249000,
+    "industries": [
+      "Technology"
+    ],
+    "countryOfCitizenship": "United States",
+    "achievement": "Known for wealth from Amazon.",
+    "image": "assets/people/caricature-sheet/086-mackenzie-scott.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/mackenzie-scott/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 86,
+      "row": 9,
+      "column": 6
+    }
+  },
+  {
+    "id": "stanley-kroenke",
+    "name": "Stanley Kroenke",
+    "title": "Sports, real estate",
+    "rank": 87,
+    "position": 87,
+    "exportOrder": 87,
+    "netWorth": "$27.59B",
+    "netWorthUsd": 27588800000,
+    "industries": [
+      "Sports"
+    ],
+    "countryOfCitizenship": "United States",
+    "achievement": "Known for wealth from Sports, real estate.",
+    "image": "assets/people/caricature-sheet/087-stanley-kroenke.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/stanley-kroenke/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 87,
+      "row": 9,
+      "column": 7
+    }
+  },
+  {
+    "id": "israel-englander",
+    "name": "Israel Englander",
+    "title": "Hedge funds",
+    "rank": 88,
+    "position": 88,
+    "exportOrder": 88,
+    "netWorth": "$27.56B",
+    "netWorthUsd": 27555932000,
+    "industries": [
+      "Finance & Investments"
+    ],
+    "countryOfCitizenship": "United States",
+    "achievement": "Known for wealth from Hedge funds.",
+    "image": "assets/people/caricature-sheet/088-israel-englander.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/israel-englander/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 88,
+      "row": 9,
+      "column": 8
+    }
+  },
+  {
+    "id": "shiv-nadar",
+    "name": "Shiv Nadar",
+    "title": "Software services",
+    "rank": 89,
+    "position": 89,
+    "exportOrder": 89,
+    "netWorth": "$27.43B",
+    "netWorthUsd": 27426856000,
+    "industries": [
+      "Technology"
+    ],
+    "countryOfCitizenship": "India",
+    "achievement": "Known for wealth from Software services.",
+    "image": "assets/people/caricature-sheet/089-shiv-nadar.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/shiv-nadar/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 89,
+      "row": 9,
+      "column": 9
+    }
+  },
+  {
+    "id": "colin-huang",
+    "name": "Colin Huang",
+    "title": "E-commerce",
+    "rank": 90,
+    "position": 90,
+    "exportOrder": 90,
+    "netWorth": "$27.42B",
+    "netWorthUsd": 27423045000,
+    "industries": [
+      "Technology"
+    ],
+    "countryOfCitizenship": "China",
+    "achievement": "Known for wealth from E-commerce.",
+    "image": "assets/people/caricature-sheet/090-colin-huang.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/colin-huang/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 90,
+      "row": 9,
+      "column": 10
+    }
+  },
+  {
+    "id": "vinod-adani",
+    "name": "Vinod Adani",
+    "title": "Infrastructure, commodities",
+    "rank": 91,
+    "position": 91,
+    "exportOrder": 91,
+    "netWorth": "$26.71B",
+    "netWorthUsd": 26711472000,
+    "industries": [
+      "Diversified"
+    ],
+    "countryOfCitizenship": "Cyprus",
+    "achievement": "Known for wealth from Infrastructure, commodities.",
+    "image": "assets/people/caricature-sheet/091-vinod-adani.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/vinod-adani/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 91,
+      "row": 10,
+      "column": 1
+    }
+  },
+  {
+    "id": "steve-cohen",
+    "name": "Steve Cohen",
+    "title": "Hedge funds",
+    "rank": 92,
+    "position": 92,
+    "exportOrder": 92,
+    "netWorth": "$26.67B",
+    "netWorthUsd": 26671478000,
+    "industries": [
+      "Finance & Investments"
+    ],
+    "countryOfCitizenship": "United States",
+    "achievement": "Known for wealth from Hedge funds.",
+    "image": "assets/people/caricature-sheet/092-steve-cohen.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/steve-cohen/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 92,
+      "row": 10,
+      "column": 2
+    }
+  },
+  {
+    "id": "francois-pinault-family",
+    "name": "François Pinault & family",
+    "title": "Luxury goods",
+    "rank": 93,
+    "position": 93,
+    "exportOrder": 93,
+    "netWorth": "$26.25B",
+    "netWorthUsd": 26249263000,
+    "industries": [
+      "Fashion & Retail"
+    ],
+    "countryOfCitizenship": "France",
+    "achievement": "Known for wealth from Luxury goods.",
+    "image": "assets/people/caricature-sheet/093-francois-pinault-family.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/francois-pinault/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 93,
+      "row": 10,
+      "column": 3
+    }
+  },
+  {
+    "id": "emmanuel-besnier",
+    "name": "Emmanuel Besnier",
+    "title": "Cheese",
+    "rank": 94,
+    "position": 94,
+    "exportOrder": 94,
+    "netWorth": "$26.13B",
+    "netWorthUsd": 26132927000,
+    "industries": [
+      "Food & Beverage"
+    ],
+    "countryOfCitizenship": "France",
+    "achievement": "Known for wealth from Cheese.",
+    "image": "assets/people/caricature-sheet/094-emmanuel-besnier.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/emmanuel-besnier/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 94,
+      "row": 10,
+      "column": 4
+    }
+  },
+  {
+    "id": "dilip-shanghvi",
+    "name": "Dilip Shanghvi",
+    "title": "Pharmaceuticals",
+    "rank": 95,
+    "position": 95,
+    "exportOrder": 95,
+    "netWorth": "$25.98B",
+    "netWorthUsd": 25975634000,
+    "industries": [
+      "Healthcare"
+    ],
+    "countryOfCitizenship": "India",
+    "achievement": "Known for wealth from Pharmaceuticals.",
+    "image": "assets/people/caricature-sheet/095-dilip-shanghvi.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/dilip-shanghvi/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 95,
+      "row": 10,
+      "column": 5
+    }
+  },
+  {
+    "id": "jack-ma",
+    "name": "Jack Ma",
+    "title": "E-commerce",
+    "rank": 96,
+    "position": 96,
+    "exportOrder": 96,
+    "netWorth": "$25.94B",
+    "netWorthUsd": 25941682000,
+    "industries": [
+      "Technology"
+    ],
+    "countryOfCitizenship": "China",
+    "achievement": "Known for wealth from E-commerce.",
+    "image": "assets/people/caricature-sheet/096-jack-ma.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/jack-ma/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 96,
+      "row": 10,
+      "column": 6
+    }
+  },
+  {
+    "id": "suleiman-kerimov-family",
+    "name": "Suleiman Kerimov & family",
+    "title": "Gold",
+    "rank": 97,
+    "position": 97,
+    "exportOrder": 97,
+    "netWorth": "$25.66B",
+    "netWorthUsd": 25662204000,
+    "industries": [
+      "Finance & Investments"
+    ],
+    "countryOfCitizenship": "Russia",
+    "achievement": "Known for wealth from Gold.",
+    "image": "assets/people/caricature-sheet/097-suleiman-kerimov-family.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/suleiman-kerimov-family/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 97,
+      "row": 10,
+      "column": 7
+    }
+  },
+  {
+    "id": "gina-rinehart",
+    "name": "Gina Rinehart",
+    "title": "Mining",
+    "rank": 98,
+    "position": 98,
+    "exportOrder": 98,
+    "netWorth": "$25.62B",
+    "netWorthUsd": 25620486000,
+    "industries": [
+      "Metals & Mining"
+    ],
+    "countryOfCitizenship": "Australia",
+    "achievement": "Known for wealth from Mining.",
+    "image": "assets/people/caricature-sheet/098-gina-rinehart.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/gina-rinehart/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 98,
+      "row": 10,
+      "column": 8
+    }
+  },
+  {
+    "id": "susanne-klatten",
+    "name": "Susanne Klatten",
+    "title": "BMW, pharmaceuticals",
+    "rank": 99,
+    "position": 99,
+    "exportOrder": 99,
+    "netWorth": "$25.60B",
+    "netWorthUsd": 25595726000,
+    "industries": [
+      "Automotive"
+    ],
+    "countryOfCitizenship": "Germany",
+    "achievement": "Known for wealth from BMW, pharmaceuticals.",
+    "image": "assets/people/caricature-sheet/099-susanne-klatten.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/susanne-klatten/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 99,
+      "row": 10,
+      "column": 9
+    }
+  },
+  {
+    "id": "vladimir-lisin",
+    "name": "Vladimir Lisin",
+    "title": "Steel, transport",
+    "rank": 100,
+    "position": 100,
+    "exportOrder": 100,
+    "netWorth": "$25.53B",
+    "netWorthUsd": 25532466000,
+    "industries": [
+      "Metals & Mining"
+    ],
+    "countryOfCitizenship": "Russia",
+    "achievement": "Known for wealth from Steel, transport.",
+    "image": "assets/people/caricature-sheet/100-vladimir-lisin.png",
+    "imageStatus": "validated",
+    "isIllustration": true,
+    "profileUrl": "https://www.forbes.com/profile/vladimir-lisin/",
+    "analysisImageAvailable": true,
+    "sourceSnapshot": "assets/crawled/forbes-real-time-billionaires-top-100-complete-repaired/forbes-real-time-billionaires-top-100.json",
+    "sheetCell": {
+      "index": 100,
+      "row": 10,
+      "column": 10
+    }
+  }
+]

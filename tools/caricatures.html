@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Caricature collection · Review</title>
+<style>
+body{font:15px system-ui;background:#171121;color:#f6e7b0;margin:0;padding:24px}h1{font:32px Georgia;margin-bottom:8px}p{color:#c9b6e4}main{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:16px}figure{margin:0;border:1px solid #675431;border-radius:12px;overflow:hidden;background:#241533}img{width:100%;aspect-ratio:1;object-fit:cover;display:block}figcaption{padding:12px}small{display:block;color:#c9b6e4;margin-top:4px}a{color:inherit}figure[hidden]{display:none}
+</style>
+<h1>Caricature collection</h1>
+<p>Original AI illustrations generated from text only. These are imagined depictions, not real photographs.</p>
+<p id="status" role="status">Loading collection…</p>
+<main id="gallery"></main>
+<script type="module">
+const people=await (await fetch('../data/people.json')).json();
+let loaded=0,settled=0;
+const status=document.getElementById('status');
+function update(){status.textContent=`${loaded} of ${people.length} portraits available${settled<people.length?' · checking…':''}. Refresh to see new portraits.`;}
+for(const p of people){
+ const figure=document.createElement('figure');figure.hidden=true;
+ const link=document.createElement('a');link.href='../'+p.image;link.target='_blank';link.rel='noopener';
+ const img=new Image();img.alt=p.name+' — AI illustration';
+ img.onload=()=>{loaded++;settled++;figure.hidden=false;update()};img.onerror=()=>{settled++;update()};img.src='../'+p.image;
+ const caption=document.createElement('figcaption');caption.textContent=`${p.rank}. ${p.name}`;
+ const info=document.createElement('small');info.textContent=p.title;caption.append(info);
+ link.append(img);figure.append(link,caption);document.getElementById('gallery').append(figure);
+}
+</script>
+</html>
