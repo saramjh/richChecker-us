@@ -1,6 +1,6 @@
-# Billionaire Face Match (working title)
+# Billionaire Face Match
 
-English adaptation of the Korean richChecker starter kit. Static HTML/CSS/JS, with no build step.
+English adaptation of the Korean richChecker starter kit, live at <https://saramjh.github.io/richChecker-us/>. Static HTML/CSS/JS, with no build step.
 
 ## Run
 
@@ -16,15 +16,26 @@ Open http://localhost:8000. The repository root contains the working app and its
 - Compare facial proportions for entertainment; do not claim to predict personality or wealth.
 - Dataset: the supplied Forbes Real-Time Billionaires top-100 JSON, keyed by `exportOrder`/`position`.
 - The site uses the supplied AI caricature sheet. Photos stay in the browser unless the user explicitly saves or shares a card.
-- Brand is provisional. Original purple/gold styling retained.
+- Original purple/gold styling retained.
 
-## Remaining setup
+## Current state
+
+The site is launched and indexable: `robots.txt` allows crawling, `index.html` has a canonical URL, OG/Twitter preview image, and a real `<title>`, and GA4 (`G-FZ9BXBPXLK`) is wired up alongside AdSense (`ads.txt` verifies publisher `pub-4410729598083068`). Two fixed-position, fixed-size ad units replace auto ads; see the ad notes below before touching them.
 
 The app manifest is available in `data/people.json`. It contains all 100 records and maps the composite image by `exportOrder`, so tied Forbes ranks cannot shift later portraits. Empty portrait cells remain in the manifest for auditability and are excluded from matching.
 
-The AdSense publisher and responsive section unit are configured. The production domain, GA4 ID, and social preview image are pending. Crawling is disabled in `robots.txt` until launch. Add the production site to the AdSense Sites list, set a canonical URL and social metadata, and request review before enabling indexing.
-
 Matching keeps dominant-axis selection, z-score clamping, and the 3% similarity floor. The UI calls the linear z-score transform a feature score, not a statistical percentile. Image capture retains pre-cropping and opaque face hiding.
+
+## Ad placement notes
+
+Auto ads previously broke the fixed-width card layout by injecting large ads mid-upload-area, so both ad slots are manual, fixed-position `.ad-slot` units (see the CSS comment above `.ad-slot` for why the wrapper uses flex centering instead of `margin:auto` on the `<ins>`).
+
+Pushing every `.adsbygoogle` unit immediately/individually caused two problems, now fixed:
+
+- Per-`<ins>` inline `push()` scripts fired before the page layout had settled, which could make AdSense miscompute the unit's width and distort the surrounding flex layout. Fix: a single deferred `<script>` at the end of `<body>` pushes all ad units once, after the DOM has rendered.
+- The second ad slot lives inside `#resultsContainer`, which is `display:none` until a match is computed. Pushing it at page load (while hidden, effectively zero-width) makes AdSense give up on that slot permanently — it does not retry when the container is later shown, so the bottom ad never appeared. Fix: that slot is excluded from the page-load push and is pushed instead from `script.js` right after `resultsContainer` is set to `display:block`.
+
+If ads stop appearing again, check both of these before assuming an AdSense account/policy issue.
 
 ## Validation
 

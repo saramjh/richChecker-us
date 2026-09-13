@@ -265,9 +265,14 @@
   </div>
 
   <script>
+    // #resultsContainer 안 두 번째 광고는 페이지 로드 시 display:none이라 여기서 push하면
+    // 애드센스가 폭 0으로 렌더를 포기하고 나중에 컨테이너가 보여져도 재시도하지 않는다.
+    // 그 광고는 결과가 표시되는 시점(script.js)에서 별도로 push한다.
     if (!['localhost', '127.0.0.1'].includes(location.hostname)) {
-      document.querySelectorAll(".adsbygoogle").forEach(() => {
-        (window.adsbygoogle = window.adsbygoogle || []).push({});
+      document.querySelectorAll(".adsbygoogle").forEach((ins) => {
+        if (!ins.closest('#resultsContainer')) {
+          (window.adsbygoogle = window.adsbygoogle || []).push({});
+        }
       });
     }
   </script>
