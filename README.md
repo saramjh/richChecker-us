@@ -20,22 +20,17 @@ Open http://localhost:8000. The repository root contains the working app and its
 
 ## Current state
 
-The site is launched and indexable: `robots.txt` allows crawling, `index.html` has a canonical URL, OG/Twitter preview image, and a real `<title>`, and GA4 (`G-FZ9BXBPXLK`) is wired up alongside AdSense (`ads.txt` verifies publisher `pub-4410729598083068`). Two fixed-position, fixed-size ad units replace auto ads; see the ad notes below before touching them.
+The site is launched and technically crawlable: `robots.txt` allows crawling, `index.html` has a canonical URL, OG/Twitter preview image, a real `<title>`, and a sitemap. GA4 (`G-4DYFKSNFBG`) is wired up alongside AdSense (`ads.txt` verifies publisher `pub-4410729598083068`). Search-engine indexing is external state and should be verified in Search Console rather than assumed from repository configuration.
 
 The app manifest is available in `data/people.json`. It contains all 100 records and maps the composite image by `exportOrder`, so tied Forbes ranks cannot shift later portraits. Empty portrait cells remain in the manifest for auditability and are excluded from matching.
 
-Matching keeps dominant-axis selection, z-score clamping, and the 3% similarity floor. The UI calls the linear z-score transform a feature score, not a statistical percentile. Image capture retains pre-cropping and opaque face hiding.
+Overall matching now ranks the three closest people by six-feature z-score distance. The dominant feature remains as a separate explainability layer that names the closest person on that one feature. Matching keeps z-score clamping and the 3% similarity floor. The UI calls the linear z-score transform a feature score, not a statistical percentile. Image capture retains pre-cropping and opaque face hiding.
 
 ## Ad placement notes
 
-Auto ads previously broke the fixed-width card layout by injecting large ads mid-upload-area, so both ad slots are manual, fixed-position `.ad-slot` units (see the CSS comment above `.ad-slot` for why the wrapper uses flex centering instead of `margin:auto` on the `<ins>`).
+The acquisition funnel intentionally has no in-flow ad slot before analysis. A single manual `.ad-slot` lives inside `#resultsContainer` after the result/share controls so monetization does not interrupt photo selection.
 
-Pushing every `.adsbygoogle` unit immediately/individually caused two problems, now fixed:
-
-- Per-`<ins>` inline `push()` scripts fired before the page layout had settled, which could make AdSense miscompute the unit's width and distort the surrounding flex layout. Fix: a single deferred `<script>` at the end of `<body>` pushes all ad units once, after the DOM has rendered.
-- The second ad slot lives inside `#resultsContainer`, which is `display:none` until a match is computed. Pushing it at page load (while hidden, effectively zero-width) makes AdSense give up on that slot permanently — it does not retry when the container is later shown, so the bottom ad never appeared. Fix: that slot is excluded from the page-load push and is pushed instead from `script.js` right after `resultsContainer` is set to `display:block`.
-
-If ads stop appearing again, check both of these before assuming an AdSense account/policy issue.
+Because `#resultsContainer` is `display:none` on page load, its AdSense unit must not be pushed until results become visible. `renderResults()` sets the container to `display:block` and then initializes that unit. Keep this ordering if the result layout changes.
 
 ## Validation
 

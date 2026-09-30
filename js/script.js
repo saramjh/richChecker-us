@@ -10,6 +10,8 @@ function trackEvent(name, params) {
 	if (typeof gtag === "function") gtag("event", name, params)
 }
 
+let analysisAttemptCounter = 0
+
 // ===== 효과음 (Tone.js로 직접 합성 — 외부 음원 파일 없이 저작권 이슈 없이 재생) =====
 let sfx = null
 async function ensureSfx() {
@@ -55,10 +57,18 @@ function playChime() {
 }
 
 // 나이 추정만 face-api.js를 계속 사용 (MediaPipe Tasks Vision에는 대응하는 로컬 나이 추정 모델이 없음)
+let ageModelPromise = null
 async function loadAgeModel() {
-	const MODEL_URL = "./models"
-	await faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL)
-	await faceapi.nets.ageGenderNet.loadFromUri(MODEL_URL)
+    if (!ageModelPromise) {
+        ageModelPromise = Promise.all([
+            faceapi.nets.tinyFaceDetector.loadFromUri("./models"),
+            faceapi.nets.ageGenderNet.loadFromUri("./models"),
+        ]).catch((err) => {
+            ageModelPromise = null
+            throw err
+        })
+    }
+    return ageModelPromise
 }
 
 // MediaPipe FaceLandmarker + faceFeatures.js는 ESM이라 동적 import로 로드
@@ -115,6 +125,17 @@ async function ensureFaceLandmarker() {
 	return faceLandmarkerInstance
 }
 
+function scheduleCoreWarmup() {
+    const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection
+    if (connection && (connection.saveData || String(connection.effectiveType || "").includes("2g"))) return
+    const warm = () => Promise.allSettled([ensureFaceLandmarker(), loadEmbeddings()])
+    if ("requestIdleCallback" in window) {
+        window.requestIdleCallback(warm, { timeout: 2500 })
+    } else {
+        window.setTimeout(warm, 1000)
+    }
+}
+
 function topExpressionFromBlendshapes(categories) {
 	const score = (...names) => {
 		const vals = names.map((n) => categories.find((c) => c.categoryName === n)?.score || 0)
@@ -142,11 +163,14 @@ window.onload = function () {
 	uploadedImage.style.display = "block"
 }
 
-// 이미지 클릭 시 파일 업로드 트리거 (오디오 컨텍스트는 반드시 사용자 제스처 안에서 시작해야 함)
-document.getElementById("uploadedImage").addEventListener("click", function () {
+// 이미지와 명시적 CTA가 같은 파일 선택 흐름을 사용한다.
+function openPhotoPicker() {
 	ensureSfx().then(playClick)
 	document.getElementById("uploadImage").click()
-})
+}
+
+document.getElementById("uploadedImage").addEventListener("click", openPhotoPicker)
+document.getElementById("choosePhotoBtn").addEventListener("click", openPhotoPicker)
 
 document.getElementById("uploadedImage").addEventListener("keydown", (event) => {
 	if (event.key === "Enter" || event.key === " ") {
@@ -168,6 +192,7 @@ document.getElementById("uploadedImageContainer").classList.remove("is-initializ
 // 로드되지 않았을 수 있다 — window의 load 이벤트(모든 defer 스크립트 실행이 끝난 뒤 발생)까지
 // 기다렸다가 시작한다.
 window.addEventListener("load", function () {
+	scheduleCoreWarmup()
 	if (typeof gsap === "undefined") return
 	gsap.to(".container", {
 		y: -3,
@@ -198,14 +223,26 @@ document.getElementById("uploadImage").addEventListener("change", function () {
 // data/embeddings.json: tools/precompute.html(MediaPipe 기반)로 미리 계산해둔
 // { featureKeys, stats: {mean, std}, people: [{..., features}] } 구조.
 // 성별 구분 없이 전체 인물 표본 하나로 통합 (여성 표본이 너무 적어 따로 나누는 의미가 없음).
+let embeddingsPromise = null
 async function loadEmbeddings() {
-	const res = await fetch(`data/embeddings.json`)
-	if (!res.ok) throw new Error("The match collection is not available yet. Please try again later.")
-	const data = await res.json()
-	if (!data || !Array.isArray(data.people) || data.people.length === 0) {
-		throw new Error("The match collection is not ready yet.")
+	if (!embeddingsPromise) {
+		embeddingsPromise = fetch("data/embeddings.json")
+			.then((res) => {
+				if (!res.ok) throw new Error("The match collection is not available yet. Please try again later.")
+				return res.json()
+			})
+			.then((data) => {
+				if (!data || !Array.isArray(data.people) || data.people.length === 0) {
+					throw new Error("The match collection is not ready yet.")
+				}
+				return data
+			})
+			.catch((err) => {
+				embeddingsPromise = null
+				throw err
+			})
 	}
-	return data
+	return embeddingsPromise
 }
 
 function toMatch(person, similarity) {
@@ -255,32 +292,38 @@ function toDetectionCanvas(imgEl, maxDim = 2200) {
 	return canvas
 }
 
-async function processImage(imageSrc) {
+async function processImage() {
+	const startedAt = performance.now()
+	const attemptNumber = ++analysisAttemptCounter
+	const eventParams = (extra = {}) => ({
+		attempt_number: attemptNumber,
+		elapsed_ms: Math.round(performance.now() - startedAt),
+		...extra,
+	})
+	const fail = (errorType, message, err) => {
+		if (err) console.error(err)
+		trackEvent("analysis_error", eventParams({ error_type: errorType }))
+		showToast(message)
+	}
+
 	showLoadingModal()
+	trackEvent("analysis_started", { attempt_number: attemptNumber })
 
 	try {
-		// "사람 얼굴을 포함한 이미지를 선택해주세요"라는 문구 하나로 모든 실패를 뭉뚱그리면,
-		// 실제로 얼굴 사진을 올렸는데 모델 로딩이 실패했거나 인식만 애매했던 경우에도 "얼굴을
-		// 안 넣었다"는 식으로 읽혀서 사용자를 오해하게 만든다는 피드백 — 실패 지점별로 원인이
-		// 구분되는 메시지를 따로 준다.
 		let modules
 		try {
 			modules = await ensureMediapipeModules()
 		} catch (err) {
-			console.error(err)
-			trackEvent("analysis_error", { error_type: "module_load" })
-			showToast("Could not load the face scanner. Check your connection and try again.")
+			fail("module_load", "Could not load the face scanner. Check your connection and try again.", err)
 			return
 		}
 		const { computeFeatures, FEATURE_KEYS, FEATURE_LABELS, zscoreDistance, zscoreToPercentile } = modules
 
 		let landmarker
 		try {
-			;[landmarker] = await Promise.all([ensureFaceLandmarker(), loadAgeModel()])
+			landmarker = await ensureFaceLandmarker()
 		} catch (err) {
-			console.error(err)
-			trackEvent("analysis_error", { error_type: "model_load" })
-			showToast("Could not load the analysis models. Check your connection and try again.")
+			fail("model_load", "Could not load the face scanner model. Check your connection and try again.", err)
 			return
 		}
 
@@ -288,107 +331,93 @@ async function processImage(imageSrc) {
 		const detectionCanvas = toDetectionCanvas(uploadedImage)
 		const detection = landmarker.detect(detectionCanvas)
 		const landmarks = detection.faceLandmarks && detection.faceLandmarks[0]
-
 		if (!landmarks) {
-			// 실제로는 얼굴이 있어도 각도/조명/거리 때문에 인식만 실패하는 경우가 흔하다.
-			// "얼굴을 포함한 사진을 골라라"는 마치 사용자가 얼굴 없는 사진을 낸 것처럼 들려서
-			// 진짜 얼굴 사진을 냈는데도 이 메시지를 보면 오해한다 — "인식하지 못했다"로 바꾸고
-			// 실제로 도움이 되는 팁(정면/밝기)을 함께 준다.
-			trackEvent("analysis_error", { error_type: "face_not_detected" })
-			showToast("Could not detect a face clearly. Try a well-lit photo facing the camera.")
+			fail("face_not_detected", "Could not detect a face clearly. Try a well-lit photo facing the camera.")
 			return
 		}
 
 		const featureObj = computeFeatures(landmarks, detectionCanvas.width, detectionCanvas.height)
-		const uploadedFeatures = FEATURE_KEYS.map((k) => featureObj[k])
+		const uploadedFeatures = FEATURE_KEYS.map((key) => featureObj[key])
 
 		let embeddingsData
 		try {
 			embeddingsData = await loadEmbeddings()
 		} catch (err) {
-			console.error(err)
-			trackEvent("analysis_error", { error_type: "embeddings_load" })
-			showToast("The match collection is not available yet. Please try again later.")
+			fail("embeddings_load", "The match collection is not available yet. Please try again later.", err)
 			return
 		}
+
 		const blendshapeCategories = detection.faceBlendshapes && detection.faceBlendshapes[0] && detection.faceBlendshapes[0].categories
 		const expression = blendshapeCategories ? topExpressionFromBlendshapes(blendshapeCategories) : null
 
+		// 나이 추정은 매칭의 핵심 경로가 아니다. 실패해도 부자 매칭 결과는 정상 제공한다.
 		let age = null
 		try {
+			await loadAgeModel()
 			const ageDetection = await faceapi.detectSingleFace(detectionCanvas, new faceapi.TinyFaceDetectorOptions()).withAgeAndGender()
 			if (ageDetection) age = Math.round(ageDetection.age)
 		} catch (err) {
-			console.warn("Age estimation failed", err)
+			console.warn("Age estimation skipped.", err)
 		}
 
-		const percentiles = (features) => FEATURE_KEYS.map((k, i) => zscoreToPercentile(features[i], embeddingsData.stats.mean[i], embeddingsData.stats.std[i]))
+		const percentiles = (features) =>
+			FEATURE_KEYS.map((key, i) => zscoreToPercentile(features[i], embeddingsData.stats.mean[i], embeddingsData.stats.std[i]))
 		const userPercentiles = percentiles(uploadedFeatures)
+		const namedPeople = embeddingsData.people.filter((person) => person.name)
+		if (!namedPeople.length) throw new Error("No match candidates are available.")
 
-		// 각 특징(이마/눈/코/입/턱/얼굴형)별로, 실명이 있는 인물 중 그 항목이 나와 가장 비슷한 사람을 찾는다.
-		// "재벌 평균과 비교하면"보다 "이 부위는 OOO 회장과 닮았다"는 게 훨씬 흥미롭다는 피드백 반영.
-		const namedPeople = embeddingsData.people.filter((p) => p.name)
 		const nearestByFeature = FEATURE_KEYS.map((_, i) => {
-			if (namedPeople.length === 0) return null
 			const userZ = (uploadedFeatures[i] - embeddingsData.stats.mean[i]) / embeddingsData.stats.std[i]
-			let best = null
-			let bestDist = Infinity
-			for (const person of namedPeople) {
-				const personZ = (person.features[i] - embeddingsData.stats.mean[i]) / embeddingsData.stats.std[i]
-				const dist = Math.abs(userZ - personZ)
-				if (dist < bestDist) {
-					bestDist = dist
-					best = person
-				}
-			}
-			return best
+			return namedPeople.reduce(
+				(best, person) => {
+					const personZ = (person.features[i] - embeddingsData.stats.mean[i]) / embeddingsData.stats.std[i]
+					const distance = Math.abs(userZ - personZ)
+					return !best || distance < best.distance ? { person, distance } : best
+				},
+				null,
+			).person
 		})
 
-		// "누굴 올려도 이재용/정몽준 몇 명으로만 귀결된다"는 신고 — 실측해보니 실제 버그가
-		// 아니라 통계적 현상이었다. 후보가 14명뿐인 좁은 풀에서 "전체 6개 항목을 합친 거리가
-		// 가장 가까운 한 명"을 고르면, 재벌 표본 평균에 가까운("제일 평범한") 한두 명이 어떤
-		// 입력에도 수학적으로 거의 항상 이겨버린다(nearest-neighbor의 "허브" 문제 — 50명의
-		// 검증용 얼굴로 시뮬레이션한 결과 상위 1명이 32%, 상위 2명이 54%를 독식했다).
-		//
-		// "닮음"의 정의 자체를 바꿔서 이 문제를 근본적으로 없앤다: 전체 얼굴을 뭉뚱그려
-		// 비교하는 대신, "이 사람에게서 가장 두드러지는 특징(=재벌 유형을 정하는 것과 같은
-		// 축)이 재벌 14명 중 누구와 제일 가깝나"로 고른다. 항상 평균적인 사람은 어느 축으로
-		// 봐도 "가장 극단적인 사람"이 될 수 없으므로, 이 방식은 허브 문제가 구조적으로
-		// 생기지 않는다(같은 시뮬레이션에서 1명 최대 14%, 12/14명이 최소 한 번은 뽑힘).
-		// 부수 효과로 "재벌 유형" 배지와 "가장 닮은 재벌"이 이제 같은 특징에서 나온 하나의
-		// 이야기가 된다: "당신은 이마가 재벌 표본 평균보다 넓은 전략가형이고, 그 이마가
-		// 이재용과 가장 닮았다" — 예전엔 이 둘이 서로 다른 계산이라 우연히 다른 사람을
-		// 가리킬 수 있었다.
-		const radarForArchetype = { keys: FEATURE_KEYS, labels: FEATURE_KEYS.map((k) => FEATURE_LABELS[k]), user: userPercentiles }
+		// "누구와 가장 닮았나"는 전체 6개 얼굴 비율 거리로 순위를 정한다.
+		const overallMatches = namedPeople
+			.map((person) => ({
+				person,
+				distance: zscoreDistance(uploadedFeatures, person.features, embeddingsData.stats),
+			}))
+			.sort((left, right) => left.distance - right.distance)
+			.slice(0, 3)
+			.map((item) => toMatch(item.person, similarityFromDistance(item.distance)))
+
+		const topMatch = overallMatches[0]
+		const radarForArchetype = {
+			keys: FEATURE_KEYS,
+			labels: FEATURE_KEYS.map((key) => FEATURE_LABELS[key]),
+			user: userPercentiles,
+		}
 		const archetype = computeArchetype(radarForArchetype)
 		const dominantIdx = FEATURE_KEYS.indexOf(archetype.featureKey)
-		const matchedPerson = nearestByFeature[dominantIdx]
-
-		// 헤드라인 %는 그대로 "전체 6개 항목 기준 종합 유사도"를 쓴다 — 이미 튜닝된
-		// SIMILARITY_SCALE/등급 체계를 그대로 재사용할 수 있고, "특정 부위는 많이 닮았지만
-		// 전체적으로는 어느 정도"라는 게 오히려 더 정직하고 납득되는 서사가 된다.
-		const topMatchDistance = zscoreDistance(uploadedFeatures, matchedPerson.features, embeddingsData.stats)
-		const topMatch = toMatch(matchedPerson, similarityFromDistance(topMatchDistance))
+		const standoutPerson = nearestByFeature[dominantIdx]
+		const standoutDistance = zscoreDistance(uploadedFeatures, standoutPerson.features, embeddingsData.stats)
+		const standoutMatch = toMatch(standoutPerson, similarityFromDistance(standoutDistance))
 
 		const radar = {
 			keys: FEATURE_KEYS,
-			labels: FEATURE_KEYS.map((k) => FEATURE_LABELS[k]),
+			labels: FEATURE_KEYS.map((key) => FEATURE_LABELS[key]),
 			user: userPercentiles,
 			match: percentiles(topMatch.features),
 			matchLabel: topMatch.name,
 			nearestByFeature,
 		}
 
-		trackEvent("analysis_complete", {
+		trackEvent("analysis_complete", eventParams({
 			match_name: topMatch.name,
+			standout_match_name: standoutMatch.name,
 			archetype_name: archetype.name,
 			similarity: Math.round(topMatch.similarity),
-		})
-		renderResults({ age, expression }, radar, archetype, topMatch)
+		}))
+		renderResults({ age, expression }, radar, archetype, overallMatches, standoutMatch)
 	} catch (err) {
-		console.error(err)
-		trackEvent("analysis_error", { error_type: "unknown" })
-		showToast("Something went wrong during analysis. Please try another photo.")
+		fail("unknown", "Something went wrong during analysis. Please try another photo.", err)
 	} finally {
 		await hideLoadingModal()
 		if (document.getElementById("resultsContainer").style.display === "none" && typeof gsap !== "undefined") {
@@ -790,6 +819,7 @@ function renderTopMatch(match, radar, tierLabel, tierDesc) {
 	return `
 		<div id="topMatch">
 			<div id="topMatchShine"></div>
+			<div class="top-match-eyebrow">Closest overall match</div>
 			<div id="topMatchHeader">
 				<span id="topMatchName">${match.name}</span>
 			</div>
@@ -803,123 +833,83 @@ function renderTopMatch(match, radar, tierLabel, tierDesc) {
 	`
 }
 
-function renderResults(aiInfo, radar, archetype, topMatch) {
-	// 메인 지표는 "가장 닮은 인물과의 일치율" 하나로 통일한다. topMatch는 processImage에서
-	// 이미 "가장 두드러지는 특징이 누구와 가장 가까운지"로 정해서 넘겨준다 — 여기서 다시
-	// 고르지 않는다(레이더 차트가 비교하는 사람과 헤드라인/카드에 나오는 사람이 어긋나지
-	// 않도록 항상 같은 곳에서 한 번만 결정한다).
-	const topSimilarity = topMatch.similarity.toFixed(1)
+function renderRunnerUps(matches) {
+	if (!Array.isArray(matches) || matches.length < 2) return ""
+	const rows = matches.slice(1, 3).map((match, index) => `
+		<div class="runner-up-row">
+			<span class="runner-up-position">#${index + 2}</span>
+			<img src="${match.image}" alt="${match.name}">
+			<span class="runner-up-copy">
+				<span class="runner-up-name">${match.name}</span>
+				${match.title ? `<span class="runner-up-title">${match.title}</span>` : ""}
+			</span>
+			<span class="runner-up-similarity">${match.similarity.toFixed(1)}%</span>
+		</div>
+	`).join("")
+	return `<div class="runner-ups"><div class="runner-ups-heading">Other close matches</div>${rows}<div class="runner-ups-note">Based on all six facial proportions</div></div>`
+}
 
+function renderResults(aiInfo, radar, archetype, topMatches, standoutMatch) {
+	const topMatch = topMatches[0]
+	const topSimilarity = topMatch.similarity
 	const readingHtml = renderFeatureReadings(radar)
+	const runnerUpsHtml = renderRunnerUps(topMatches)
 
-	// AI 추정 나이/표정은 "이 매칭 결과"가 아니라 "업로드한 사진 자체"에 대한 정보라,
-	// 결과 카드 쪽 템플릿이 아니라 사진 위 뱃지에 직접 채운다. 나이/표정 둘 다 실패할 수
-	// 있어 있는 것만 넣고, 하나도 없으면 빈 채로 둔다(CSS :empty로 뱃지 자체를 숨김).
 	const aiBadgeLines = []
 	if (aiInfo && aiInfo.age) aiBadgeLines.push(`<span class="ai-badge-line">Estimated age: ${aiInfo.age}</span>`)
 	if (aiInfo && aiInfo.expression) aiBadgeLines.push(`<span class="ai-badge-line ai-badge-sub">${aiInfo.expression.label} ${(aiInfo.expression.score * 100).toFixed(0)}%</span>`)
 	document.getElementById("aiInfoBadge").innerHTML = aiBadgeLines.join("")
 
-	// 조건에 따른 등급 설정 (topSimilarity 기준: 100%에 가까울수록 "재벌상"이라는
-	// 일반적인 직관에 맞춘 등급). 라벨을 따로 빼두는 건 공유 카드에서도 그대로 재사용하기 위함.
 	let tierLabel = ""
-	let tierDesc = ""
-	if (topSimilarity >= 90) {
-		tierLabel = "Very close match"
-		tierDesc = "Similarity compares all six proportions with the selected caricature."
-	} else if (topSimilarity >= 80) {
-		tierLabel = "Strong resemblance"
-		tierDesc = "Similarity compares all six proportions with the selected caricature."
-	} else if (topSimilarity >= 70) {
-		tierLabel = "Similar proportions"
-		tierDesc = "Similarity compares all six proportions with the selected caricature."
-	} else if (topSimilarity >= 60) {
-		tierLabel = "Some shared features"
-		tierDesc = "Similarity compares all six proportions with the selected caricature."
-	} else if (topSimilarity >= 50) {
-		tierLabel = "A partial match"
-		tierDesc = "Similarity compares all six proportions with the selected caricature."
-	} else if (topSimilarity >= 40) {
-		tierLabel = "A subtle resemblance"
-		tierDesc = "Similarity compares all six proportions with the selected caricature."
-	} else if (topSimilarity >= 30) {
-		tierLabel = "A light resemblance"
-		tierDesc = "Similarity compares all six proportions with the selected caricature."
-	} else if (topSimilarity >= 20) {
-		tierLabel = "Mostly different"
-		tierDesc = "Similarity compares all six proportions with the selected caricature."
-	} else if (topSimilarity >= 10) {
-		tierLabel = "Distinct proportions"
-		tierDesc = "Similarity compares all six proportions with the selected caricature."
-	} else {
-		tierLabel = "A unique combination"
-		tierDesc = "Similarity compares all six proportions with the selected caricature."
-	}
-	// 등급 문구("눈에 띄는 특징" 등)는 매칭 카드(사진·레이더 차트) 맨 위로 합쳐서 넣는다 —
-	// 예전엔 이 문구가 "OOO과 가장 닮았어요"까지 따로 말하고, 바로 아래 카드에 또 같은
-	// 이름이 나와서 중복이었다는 피드백 반영. topMatch는 항상 실명 있는 인물이다(namedPeople이
-	// 비어 있으면 processImage의 matchedPerson.name 참조에서 이미 예외로 걸러진다).
-	const topMatchHtml = `<div id="topMatchReveal" class="pending-reveal">${renderTopMatch(topMatch, radar, tierLabel, tierDesc)}</div>`
+	if (topSimilarity >= 90) tierLabel = "Very close match"
+	else if (topSimilarity >= 80) tierLabel = "Strong resemblance"
+	else if (topSimilarity >= 70) tierLabel = "Similar proportions"
+	else if (topSimilarity >= 60) tierLabel = "Some shared features"
+	else if (topSimilarity >= 50) tierLabel = "A partial match"
+	else if (topSimilarity >= 40) tierLabel = "A subtle resemblance"
+	else if (topSimilarity >= 30) tierLabel = "A light resemblance"
+	else if (topSimilarity >= 20) tierLabel = "Mostly different"
+	else if (topSimilarity >= 10) tierLabel = "Distinct proportions"
+	else tierLabel = "A unique combination"
+	const tierDesc = "Similarity compares all six facial proportions with the #1 overall match."
 
-	// 마케팅 관점: %는 잊어도 "나는 OO형"이라는 정체성 라벨은 기억하고 공유한다(MBTI류
-	// 성향테스트가 검증한 패턴). 6개 항목 중 재벌 표본 평균에서 가장 크게 벗어난 항목 하나를
-	// "당신을 가장 잘 설명하는 특징"으로 뽑아 유형 배지로 승격한다.
+	const topMatchHtml = `<div id="topMatchReveal" class="pending-reveal">${renderTopMatch(topMatch, radar, tierLabel, tierDesc)}</div>`
 	const archetypeHtml = archetype
 		? `
 			<div id="archetypeBadge">
 				<span id="archetypeEyebrow">Your standout feature</span>
 				<span id="archetypeName">${icon(FEATURE_READINGS[archetype.featureKey].icon, "archetype-icon")}${archetype.name}</span>
-				<p id="archetypeDesc">${archetype.featureLabel} · ${archetype.rankText} — ${archetype.desc}</p>
+				<p id="archetypeDesc">${archetype.featureLabel} · ${archetype.rankText} — ${archetype.desc}<span class="standout-match">Closest on this feature: <strong>${standoutMatch.name}</strong>.</span></p>
 			</div>
 		`
 		: ""
 
 	const divider = `<div class="section-divider"><span></span>✦<span></span></div>`
-
-	// 결과 출력. 헤드라인 %는 예전엔 "나의 관상 분석 결과" 제목 아래 큰 텍스트 블록으로 따로
-	// 떠 있었는데, 숫자가 정작 "무엇에 대한 숫자인지"(업로드한 내 사진)와 시각적으로 떨어져
-	// 있어 어색하다는 피드백 — 텍스트 블록을 걷어내고 업로드된 내 사진 위에 뱃지로 박아서
-	// 사진과 숫자가 한 덩어리로 보이게 한다.
 	document.getElementById("averageResult").innerHTML = `
 		<div id="resultRate">
-			${archetypeHtml}
-			${divider}${topMatchHtml}
+			${topMatchHtml}
+			${runnerUpsHtml}
+			${archetypeHtml ? divider + archetypeHtml : ""}
 			${readingHtml ? divider + readingHtml : ""}
 		</div>
 	`
 
 	document.getElementById("resultsContainer").style.display = "block"
-
-	// #resultsContainer는 페이지 로드 시 display:none이라, body 끝에서 한 번만 push()하는
-	// 스크립트가 실행될 때 이 안의 광고 유닛은 폭 0/숨김 상태로 처리된다 — 애드센스는 이때
-	// 렌더를 포기하고 나중에 컨테이너가 보여져도 알아서 재시도하지 않는다(그래서 하단 광고가
-	// 계속 안 보였다). 컨테이너를 보여준 지금 이 시점에 그 광고만 다시 push한다.
 	if (!["localhost", "127.0.0.1"].includes(location.hostname)) {
-		document
-			.querySelectorAll("#resultsContainer .adsbygoogle")
-			.forEach((ins) => {
-				if (!ins.dataset.adsbygoogleStatus) {
-					;(window.adsbygoogle = window.adsbygoogle || []).push({})
-				}
-			})
+		document.querySelectorAll("#resultsContainer .adsbygoogle").forEach((ins) => {
+			if (!ins.dataset.adsbygoogleStatus) (window.adsbygoogle = window.adsbygoogle || []).push({})
+		})
 	}
 
-	// 소개 블록(태그라인/이용흐름/가치제안)과 업로드 사진 미리보기는 이미 결과를 받은
-	// 사용자에겐 불필요한 반복이라는 피드백 — 결과가 나오면 통째로 숨긴다. 업로드 사진은
-	// 아래 매칭 카드의 "나" 사진으로 대체되므로 정보 손실이 없다. (showLoadingModal에서 이미
-	// 화면 전환용 퇴장 애니메이션을 재생했으므로, 여기선 완전히 레이아웃에서 빼기만 한다.)
 	document.getElementById("introSection").style.display = "none"
 	document.getElementById("uploadedImageContainer").style.display = "none"
 
-	// 일치율 %는 이제 매칭 카드 안 "나 ≈ 매칭인물" 사이(#topMatchPercent)에 있다 — 카드 자체가
-	// 500ms 뒤에야 리빌되므로, 카운트업도 그 타이밍(delay 0.6)에 맞춰야 숨겨진 채로 세는
-	// 어색함이 없다.
 	const topMatchPercentEl = document.getElementById("topMatchPercent")
 	if (typeof gsap !== "undefined") {
 		gsap.to(
 			{ v: 0 },
 			{
-				v: parseFloat(topSimilarity),
+				v: topSimilarity,
 				duration: 0.9,
 				ease: "power2.out",
 				delay: 0.6,
@@ -931,12 +921,11 @@ function renderResults(aiInfo, radar, archetype, topMatch) {
 		gsap.from(".reading-item", { opacity: 0, y: 10, duration: 0.4, stagger: 0.07, ease: "power2.out", delay: 0.9 })
 		gsap.fromTo(".radar-poly", { scale: 0 }, { scale: 1, duration: 0.7, ease: "elastic.out(1, 0.65)", stagger: 0.12, delay: 0.55 })
 	} else if (topMatchPercentEl) {
-		topMatchPercentEl.textContent = topSimilarity + "%"
+		topMatchPercentEl.textContent = topSimilarity.toFixed(1) + "%"
 	}
 
 	const revealEl = document.getElementById("topMatchReveal")
 	if (revealEl) {
-		// 짧은 대기 후 카드가 팝업되는 연출 (두구두구 효과) + 차임 효과음
 		requestAnimationFrame(() => {
 			setTimeout(() => {
 				revealEl.classList.add("revealed")
@@ -948,11 +937,9 @@ function renderResults(aiInfo, radar, archetype, topMatch) {
 	const cardEl = document.getElementById("topMatch")
 	if (cardEl) initHoloEffect(cardEl)
 
-	lastResultSummary = { topMatchName: topMatch.name, archetypeName: archetype && archetype.name, topSimilarity }
-	// populateShareCard가 async(사진 비율 보정을 위한 캔버스 크롭 포함)라, 저장/공유 버튼을
-	// 결과가 뜨자마자 바로 눌러도 안전하도록 그 Promise를 기억해뒀다가 captureShareCard에서
-	// 반드시 기다리게 한다.
-	shareCardReadyPromise = populateShareCard(topMatch, topSimilarity, tierLabel, archetype, radar)
+	const topSimilarityText = topSimilarity.toFixed(1)
+	lastResultSummary = { topMatchName: topMatch.name, archetypeName: archetype && archetype.name, topSimilarity: topSimilarityText }
+	shareCardReadyPromise = populateShareCard(topMatch, topSimilarityText, tierLabel, archetype, radar)
 	applyFaceHiddenState()
 }
 

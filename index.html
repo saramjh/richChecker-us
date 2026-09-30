@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Find your billionaire lookalike with a playful AI face comparison. Your photo is analyzed on your device.">
+  <meta name="description" content="Upload a photo to compare six facial proportions with 100 billionaires, see your three closest matches, and get a shareable result. Analysis stays on your device.">
   <meta name="theme-color" content="#1a1035">
   <title>Billionaire Lookalike Test | Billionaire Face Match</title>
   <link rel="canonical" href="https://saramjh.github.io/richChecker-us/">
@@ -28,7 +28,7 @@
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://saramjh.github.io/richChecker-us/">
   <meta property="og:title" content="Billionaire Face Match">
-  <meta property="og:description" content="Which billionaire do you look like? Compare six facial proportions and share your match card.">
+  <meta property="og:description" content="Which billionaire do you look like? Compare six facial proportions with 100 billionaires and see your three closest matches.">
   <meta property="og:site_name" content="Billionaire Face Match">
   <meta property="og:locale" content="en_US">
   <meta property="og:image" content="https://saramjh.github.io/richChecker-us/assets/imgs/og-image.png">
@@ -38,7 +38,7 @@
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Billionaire Face Match">
-  <meta name="twitter:description" content="Which billionaire do you look like? Compare six facial proportions and share your match card.">
+  <meta name="twitter:description" content="Which billionaire do you look like? Compare six facial proportions with 100 billionaires and see your three closest matches.">
   <meta name="twitter:image" content="https://saramjh.github.io/richChecker-us/assets/imgs/og-image.png">
 
   <!-- 검색엔진이 이 페이지를 "일반 웹앱"으로 명확히 이해하도록 구조화 데이터를 준다 —
@@ -91,107 +91,25 @@
            방문자에게 필요한 정보다 — 이미 결과를 받은 사용자에겐 불필요한 반복이라는 피드백
            반영, 결과가 나오면 이 블록 전체를 접는다(JS에서 처리, 다시 하면 재노출). -->
       <div id="introSection">
-        <p class="tagline">Which billionaire do you look like?</p>
-        <p class="forbes-badge">✦ Korean face-reading inspiration meets AI ✦</p>
-
-        <!-- 이용 흐름: 무엇을 하게 되고, 무엇을 얻는지 미리 보여준다 -->
-        <div id="howItWorks">
-          <div class="step">
-            <span class="step-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"
-                stroke-linecap="round" stroke-linejoin="round">
-                <path
-                  d="M13.997 4a2 2 0 0 1 1.76 1.05l.486.9A2 2 0 0 0 18.003 7H20a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h1.997a2 2 0 0 0 1.759-1.048l.489-.904A2 2 0 0 1 10.004 4z" />
-                <circle cx="12" cy="13" r="3" />
-              </svg></span>
-            <span class="step-label">Add a photo</span>
-          </div>
-          <span class="step-arrow">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-              stroke-linejoin="round">
-              <path d="M5 12h14" />
-              <path d="m12 5 7 7-7 7" />
-            </svg>
-          </span>
-          <div class="step">
-            <span class="step-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"
-                stroke-linecap="round" stroke-linejoin="round">
-                <path d="M3 7V5a2 2 0 0 1 2-2h2" />
-                <path d="M17 3h2a2 2 0 0 1 2 2v2" />
-                <path d="M21 17v2a2 2 0 0 1-2 2h-2" />
-                <path d="M7 21H5a2 2 0 0 1-2-2v-2" />
-                <path d="M8 14s1.5 2 4 2 4-2 4-2" />
-                <path d="M9 9h.01" />
-                <path d="M15 9h.01" />
-              </svg></span>
-            <span class="step-label">Scan features</span>
-          </div>
-          <span class="step-arrow">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-              stroke-linejoin="round">
-              <path d="M5 12h14" />
-              <path d="m12 5 7 7-7 7" />
-            </svg>
-          </span>
-          <div class="step">
-            <span class="step-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"
-                stroke-linecap="round" stroke-linejoin="round">
-                <path
-                  d="M11.562 3.266a.5.5 0 0 1 .876 0L15.39 8.87a1 1 0 0 0 1.516.294L21.183 5.5a.5.5 0 0 1 .798.519l-2.834 10.246a1 1 0 0 1-.956.734H5.81a1 1 0 0 1-.957-.734L2.02 6.02a.5.5 0 0 1 .798-.519l4.276 3.664a1 1 0 0 0 1.516-.294z" />
-                <path d="M5 21h14" />
-              </svg></span>
-            <span class="step-label">Find a match</span>
-          </div>
-          <span class="step-arrow">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-              stroke-linejoin="round">
-              <path d="M5 12h14" />
-              <path d="m12 5 7 7-7 7" />
-            </svg>
-          </span>
-          <div class="step">
-            <span class="step-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"
-                stroke-linecap="round" stroke-linejoin="round">
-                <path d="M13 19a4 4 0 0 0-8 0" />
-                <path d="M16 10h2" />
-                <path d="M16 14h2" />
-                <circle cx="9" cy="12" r="3" />
-                <rect x="2" y="5" width="20" height="14" rx="2" />
-              </svg></span>
-            <span class="step-label">Share your card</span>
-          </div>
-        </div>
-        <p class="value-prop">Discover your standout feature and get a <strong>personalized match card</strong> to share.</p>
-        <details class="culture-note" open>
-          <summary>Inspired by Korean face reading</summary>
-          <p>Meet <strong>gwansang</strong>, Korea’s traditional art of face reading. This playful take on Korean culture pairs that inspiration with AI to compare six facial proportions with billionaire caricatures.</p>
-          <p>Think of it as a cultural conversation starter. Your face does not determine your fortune, personality, or potential.</p>
-        </details>
-        <!-- 파일 업로드 버튼 (숨김 처리) -->
+        <p class="tagline">Which billionaire looks most like you?</p>
+        <p class="value-prop">Upload one photo to compare six facial proportions with <strong>100 billionaires</strong> and see your three closest overall matches.</p>
+        <p class="intro-proof">100-person billionaire sample · on-device analysis · no sign-up</p>
         <input type="file" id="uploadImage" accept="image/*" style="display: none;">
-
-        <!-- Choose a photo to find your match 표시. is-initializing 상태에서는 클릭이 안 먹는 게 정상이라는 걸
-              시각적으로 보여준다(스피너+반투명) — script.js가 로드를 끝내고 클릭 리스너를 실제로
-              건 다음에만 이 클래스를 제거해서, "눌러도 반응 없는 버튼"이 생기지 않게 한다.
-              결과가 나오면 이 미리보기 자체도 숨긴다(아래 매칭 카드에 "나" 사진이 이미 나오므로
-              중복) — 다시 하려면 결과 영역의 재시작 버튼으로 돌아온다. -->
+        <button id="choosePhotoBtn" type="button">Choose a photo</button>
         <div id="uploadedImageContainer" class="is-initializing">
-          <img id="uploadedImage" role="button" tabindex="0" aria-label="Choose a photo" src="assets/imgs/placeholder.svg" alt="Choose a photo to find your match">
+          <img id="uploadedImage" role="button" tabindex="0" aria-label="Choose a photo" src="assets/imgs/placeholder.svg" alt="Choose a photo to find your billionaire matches">
           <div id="initSpinner"></div>
-          <!-- 일치율 %는 매칭 카드 안 "나 ≈ 매칭인물" 사이 자리로 옮겼다(사진과 사진 사이에
-                있어야 "이 둘이 몇 % 닮았다"는 뜻이 더 직접적으로 읽힌다는 판단) — 대신 이 사진
-                자체에 대한 정보(AI 추정 나이·표정)를 뱃지로 붙인다(JS에서 채움). -->
           <div id="aiInfoBadge"></div>
         </div>
-        <p class="fine-print">Use a clear, well-lit photo facing the camera.</p>
-
-        <!-- 자동광고가 이 폭 고정 카드형 레이아웃과 안 맞아 업로드 영역 한복판까지 큰 광고를
-           끼워넣는 문제가 있었다 — 자동광고 대신 위치를 고정한 반응형 광고 유닛으로 대체.
-           min-height로 로드 전/후 레이아웃이 튀지 않게 공간을 미리 예약한다. -->
-        <div class="ad-slot">
-          <span class="ad-label">Advertisement</span>
-          <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-4410729598083068"
-            data-ad-slot="3416531598" data-ad-format="auto" data-full-width-responsive="true"></ins>
-        </div>
+        <p class="fine-print">Your photo stays on your device. A clear, front-facing photo works best.</p>
+        <details class="method-note">
+          <summary>How matching works</summary>
+          <p>We compare forehead height, eye spacing, nose length, mouth width, chin length, and face shape against the 100-person sample.</p>
+        </details>
+        <details class="culture-note">
+          <summary>Why Korean gwansang?</summary>
+          <p>The theme is inspired by Korea’s face-reading tradition. The actual match is based on measured facial proportions, not predictions about wealth, personality, or future success.</p>
+        </details>
       </div>
 
 
@@ -267,18 +185,6 @@
     </div>
   </div>
 
-  <script>
-    // #resultsContainer 안 두 번째 광고는 페이지 로드 시 display:none이라 여기서 push하면
-    // 애드센스가 폭 0으로 렌더를 포기하고 나중에 컨테이너가 보여져도 재시도하지 않는다.
-    // 그 광고는 결과가 표시되는 시점(script.js)에서 별도로 push한다.
-    if (!['localhost', '127.0.0.1'].includes(location.hostname)) {
-      document.querySelectorAll(".adsbygoogle").forEach((ins) => {
-        if (!ins.closest('#resultsContainer')) {
-          (window.adsbygoogle = window.adsbygoogle || []).push({});
-        }
-      });
-    }
-  </script>
 
   <!-- 저장/공유용 카드: Instagram 피드(4:5)/페이스북/카카오톡에 바로 올리기 좋은 비율로 따로
        그려서 캡처한다. 화면에는 보이지 않고 캡처 시에만 사용됨. -->
