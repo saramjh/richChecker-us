@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Upload a photo to compare six facial proportions with 100 billionaires, see your three closest matches, and get a shareable result. Analysis stays on your device.">
+  <meta name="description" content="Which billionaire do you look like? Upload a photo for a focused celebrity lookalike test against 100 billionaires, see your Top 3 matches, and get a shareable result.">
   <meta name="theme-color" content="#1a1035">
   <title>Billionaire Lookalike Test | Billionaire Face Match</title>
   <link rel="canonical" href="https://saramjh.github.io/richChecker-us/">
@@ -45,6 +45,7 @@
     "@context": "https://schema.org",
     "@type": "WebApplication",
     "name": "Billionaire Face Match",
+    "alternateName": ["Billionaire Lookalike Test", "Billionaire Face Match"],
     "url": "https://saramjh.github.io/richChecker-us/",
     "description": "A free entertainment web app that compares six facial proportions with a 100-person billionaire sample to show your Top 3 closest matches and standout feature. Photos are processed on your device.",
     "applicationCategory": "EntertainmentApplication",
@@ -61,13 +62,13 @@
 
   <link rel="preload" href="models/mediapipe/face_landmarker.task" as="fetch">
   <link rel="preload" href="js/vendor/mediapipe/wasm/vision_wasm_internal.wasm" as="fetch">
-  <link rel="stylesheet" href="css/style.css?v=20260930-cleanup-motion5">
+  <link rel="stylesheet" href="css/style.css?v=20260930-growth6">
   <!-- 전부 defer로 로드한다(파싱을 막지 않기 위해). script.js는 맨 먼저 둔다 — defer 스크립트는
        "문서 순서대로 실행"되므로, script.js를 라이브러리들 뒤에 두면 그 라이브러리들의 실행이
        전부 끝날 때까지 업로드/초기화 버튼 리스너가 안 붙는 채로 남는다. script.js 안에서 외부
        라이브러리(gsap/Tone 등)를 쓰는 코드는 전부 "나중에 호출되는 함수 안"에만 있고
        최상단에서 즉시 실행되는 건 없으므로, 순서를 앞으로 당겨도 안전하다. -->
-  <script defer src="js/script.js?v=20260930-cleanup-motion5"></script>
+  <script defer src="js/script.js?v=20260930-growth6"></script>
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
@@ -92,6 +93,10 @@
         <p class="tagline">Which billionaire is your closest face match?</p>
         <p class="value-prop">Compare six facial proportions with <strong>100 billionaires</strong> to see your Top 3 closest matches and standout feature.</p>
         <p class="intro-proof">Top 3 · six-feature breakdown · save/share result card</p>
+        <aside id="challengeEntry" class="challenge-entry" hidden aria-live="polite">
+          <span class="challenge-entry__eyebrow">A friend sent a result</span>
+          <p><strong id="challengeMatchName"></strong> matched at <strong id="challengeMatchScore"></strong>%. <span>Who will you match?</span></p>
+        </aside>
         <input type="file" id="uploadImage" accept="image/*">
         <button id="choosePhotoBtn" type="button">Choose a photo and start</button>
         <div id="uploadedImageContainer" class="is-initializing">
@@ -107,7 +112,7 @@
 
         <details class="method-note">
           <summary>How matching works</summary>
-          <p>We compare forehead height, eye spacing, nose length, mouth width, chin length, and face shape against the 100-person sample.</p>
+          <p>We compare forehead height, eye spacing, nose length, mouth width, chin length, and face shape against the 100-person sample. It is a focused celebrity-lookalike edition: the comparison set is billionaires rather than a general celebrity catalog.</p>
         </details>
         <details class="culture-note">
           <summary>Why Korean gwansang?</summary>
@@ -148,6 +153,7 @@
                방법이 없어 사이트 링크·고정 문구만 보낼 수 있었다(플랫폼 자체의 한계) — 결과 이미지가
                빠진 공유는 의미가 없다는 피드백으로 제거하고, 실제 카드 이미지 파일을 OS 공유
                시트로 첨부하는 공유하기/Instagram만 남긴다. -->
+          <p class="share-prompt">Send your result to a friend and compare who each of you matched.</p>
           <div class="share-row">
             <button id="webShareBtn" aria-label="Share to another app" title="Share to another app">
               <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"

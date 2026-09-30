@@ -22,9 +22,21 @@ function classifyEntryReferrer() {
 
 const entryReferrer = classifyEntryReferrer()
 
+function parseSharedChallengeParams() {
+	const params = new URLSearchParams(window.location.search)
+	if (params.get("via") !== "share") return null
+	const matchId = params.get("match") || ""
+	const score = Number.parseInt(params.get("score") || "", 10)
+	if (!/^[a-z0-9-]{1,80}$/.test(matchId) || !Number.isInteger(score) || score < 3 || score > 100) return null
+	return { matchId, score }
+}
+
+const sharedEntryCandidate = parseSharedChallengeParams()
+let entryContext = sharedEntryCandidate ? "shared_candidate" : "standard"
+
 function trackEvent(name, params = {}) {
 	try {
-		if (typeof gtag === "function") gtag("event", name, { entry_ref: entryReferrer, ...params })
+		if (typeof gtag === "function") gtag("event", name, { entry_ref: entryReferrer, entry_context: entryContext, ...params })
 	} catch (err) {
 		console.warn("Analytics event skipped:", name, err)
 	}
@@ -297,6 +309,7 @@ document.getElementById("uploadImage").addEventListener("change", function () {
 	const fileSizeKb = Math.round(file.size / 1024)
 	const loadingSessionId = showLoadingModal()
 	trackEvent("upload_started", { source, file_size_kb: fileSizeKb })
+	trackSharedVisitUpload()
 	const readerStartedAt = performance.now()
 	const reader = new FileReader()
 
@@ -378,8 +391,57 @@ async function loadEmbeddings() {
 // embeddings state is initialized above; startup warmup is now safe to begin.
 startCoreWarmup("startup")
 
+let sharedChallenge = null
+let sharedVisitUploadTracked = false
+let sharedVisitCompleteTracked = false
+async function hydrateSharedChallenge() {
+	if (!sharedEntryCandidate) return null
+	try {
+		const data = await loadEmbeddings()
+		const person = data.people.find((candidate) => candidate.id === sharedEntryCandidate.matchId)
+		if (!person) return null
+		sharedChallenge = { matchId: person.id, matchName: person.name, score: sharedEntryCandidate.score }
+		entryContext = "shared_result"
+		const challengeEl = document.getElementById("challengeEntry")
+		document.getElementById("challengeMatchName").textContent = person.name
+		document.getElementById("challengeMatchScore").textContent = String(sharedEntryCandidate.score)
+		challengeEl.hidden = false
+		trackEvent("shared_visit", { shared_match_id: person.id, shared_score: sharedEntryCandidate.score })
+		return sharedChallenge
+	} catch (err) {
+		console.warn("Shared result context could not be verified.", err)
+		return null
+	}
+}
+const sharedChallengePromise = hydrateSharedChallenge()
+
+function trackSharedVisitUpload() {
+	if (!sharedChallengePromise || sharedVisitUploadTracked) return
+	sharedChallengePromise.then((challenge) => {
+		if (!challenge || sharedVisitUploadTracked) return
+		sharedVisitUploadTracked = true
+		trackEvent("shared_visit_upload", { shared_match_id: challenge.matchId, shared_score: challenge.score })
+	})
+}
+
+function trackSharedVisitComplete(topMatch) {
+	if (!sharedChallengePromise || sharedVisitCompleteTracked) return
+	sharedChallengePromise.then((challenge) => {
+		if (!challenge || sharedVisitCompleteTracked) return
+		sharedVisitCompleteTracked = true
+		trackEvent("shared_visit_complete", {
+			shared_match_id: challenge.matchId,
+			shared_score: challenge.score,
+			new_match_id: topMatch.id,
+			new_score: topMatch.similarityDisplay,
+			same_match: challenge.matchId === topMatch.id ? 1 : 0,
+		})
+	})
+}
+
 function toMatch(person, similarity, similarityDisplay) {
 	return {
+		id: person.id,
 		name: person.name,
 		title: person.title,
 		image: person.image, // 공유 카드에서 "나 vs 매칭 인물" 사진 비교에 사용
@@ -599,6 +661,7 @@ async function processImage(context = {}, loadingSessionId = null) {
 			archetype_name: archetype.name,
 			similarity: topMatch.similarityDisplay,
 		}))
+		trackSharedVisitComplete(topMatch)
 	} catch (err) {
 		fail("unknown", "Something went wrong during analysis. Please try another photo.", err)
 	} finally {
@@ -1114,7 +1177,7 @@ function renderResults(aiInfo, radar, archetype, topMatches, standoutMatch) {
 	if (cardEl) initHoloEffect(cardEl)
 
 	const topSimilarityText = String(topSimilarity)
-	lastResultSummary = { topMatchName: topMatch.name, archetypeName: archetype && archetype.name, topSimilarity: topSimilarityText }
+	lastResultSummary = { topMatchId: topMatch.id, topMatchName: topMatch.name, archetypeName: archetype && archetype.name, topSimilarity: topSimilarityText }
 	shareCardReadyPromise = populateShareCard(topMatch, topSimilarityText, tierLabel, archetype, radar, shareResultGeneration)
 	applyFaceHiddenState()
 	initializeResultAds()
@@ -1600,17 +1663,48 @@ document.getElementById("saveImgBtn").addEventListener("click", function () {
 function buildShareText() {
 	if (!lastResultSummary) return "Meet my billionaire face match!"
 	const { topMatchName, archetypeName, topSimilarity } = lastResultSummary
-	if (topMatchName && archetypeName) return `My match is ${topMatchName}: ${topSimilarity}% similarity to an AI caricature! My standout feature: ${archetypeName}. Just for fun.`
-	if (archetypeName) return `My standout feature is ${archetypeName}! Try your own billionaire face match.`
+	if (topMatchName && archetypeName) return `My match is ${topMatchName} at ${topSimilarity}% similarity. My standout feature: ${archetypeName}. Compare yours with mine.`
+	if (archetypeName) return `My standout feature is ${archetypeName}. Compare your billionaire face match with mine.`
 	return "Meet my billionaire face match!"
 }
-function sharePreparedCard(fallbackMessage) {
+
+function buildChallengeUrl() {
+	if (!lastResultSummary || !lastResultSummary.topMatchId) return document.querySelector('link[rel="canonical"]').href
+	const canonical = new URL(document.querySelector('link[rel="canonical"]').href)
+	canonical.searchParams.set("via", "share")
+	canonical.searchParams.set("match", lastResultSummary.topMatchId)
+	canonical.searchParams.set("score", lastResultSummary.topSimilarity)
+	return canonical.toString()
+}
+
+function trackShareLinkCreated(method) {
+	if (!lastResultSummary) return
+	trackEvent("share_link_created", {
+		method,
+		match_id: lastResultSummary.topMatchId,
+		score: lastResultSummary.topSimilarity,
+	})
+}
+
+async function copyChallengeUrl(challengeUrl) {
+	if (!navigator.clipboard || !navigator.clipboard.writeText) return false
+	try {
+		await navigator.clipboard.writeText(challengeUrl)
+		return true
+	} catch (err) {
+		console.warn("Challenge link copy failed", err)
+		return false
+	}
+}
+
+function sharePreparedCard(fallbackMessage, method) {
 	if (!ensurePreparedShareArtifact()) return
+	const challengeUrl = buildChallengeUrl()
 	const file = new File([preparedShareBlob], SHARE_FILE_NAME, { type: "image/png" })
+	const payload = { files: [file], title: SHARE_TITLE, text: buildShareText(), url: challengeUrl }
 	if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
 		try {
-			const sharePromise = navigator.share({ files: [file], title: SHARE_TITLE, text: buildShareText() })
-			sharePromise.catch((err) => {
+			navigator.share(payload).then(() => trackShareLinkCreated(method)).catch((err) => {
 				if (err.name === "AbortError") return
 				console.warn("Sharing failed", err)
 				showToast("The share sheet could not be opened. Save the card and attach it in your preferred app.")
@@ -1618,17 +1712,27 @@ function sharePreparedCard(fallbackMessage) {
 			return
 		} catch (err) { console.warn("Sharing failed", err) }
 	}
-	downloadPreparedShareBlob(fallbackMessage)
+	if (navigator.share) {
+		navigator.share({ title: SHARE_TITLE, text: buildShareText(), url: challengeUrl })
+			.then(() => trackShareLinkCreated(method + "_link"))
+			.catch((err) => { if (err.name !== "AbortError") console.warn("Link sharing failed", err) })
+		return
+	}
+	copyChallengeUrl(challengeUrl).then((copied) => {
+		downloadPreparedShareBlob(copied ? `${fallbackMessage} The comparison link was also copied to your clipboard.` : fallbackMessage)
+		if (copied) trackShareLinkCreated(method + "_clipboard")
+	})
 }
+
 document.getElementById("webShareBtn").addEventListener("click", function () {
 	playClick()
 	if (!preparedShareBlob) { ensurePreparedShareArtifact(); return }
 	trackEvent("share_click", { method: "web_share" })
-	sharePreparedCard("File sharing is unavailable in this browser, so the card was downloaded. Attach it in your preferred app.")
+	sharePreparedCard("File sharing is unavailable in this browser, so the card was downloaded.", "web_share")
 })
 document.getElementById("instagramShareBtn").addEventListener("click", function () {
 	playClick()
 	if (!preparedShareBlob) { ensurePreparedShareArtifact(); return }
 	trackEvent("share_click", { method: "instagram" })
-	sharePreparedCard("Instagram cannot accept a direct web upload here, so the card was downloaded. Open Instagram and choose the saved image.")
+	sharePreparedCard("Instagram cannot accept a direct web upload here, so the card was downloaded.", "instagram")
 })
