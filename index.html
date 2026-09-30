@@ -8,9 +8,6 @@
   <meta name="theme-color" content="#1a1035">
   <title>Billionaire Lookalike Test | Billionaire Face Match</title>
   <link rel="canonical" href="https://saramjh.github.io/richChecker-us/">
-  <link rel="alternate" hreflang="ko" href="https://saramjh.github.io/richChecker/">
-  <link rel="alternate" hreflang="en" href="https://saramjh.github.io/richChecker-us/">
-  <link rel="alternate" hreflang="x-default" href="https://saramjh.github.io/richChecker-us/">
   <link rel="icon" type="image/svg+xml" href="assets/imgs/favicon.svg">
 
   <!-- Google tag (gtag.js) -->
@@ -86,6 +83,11 @@
     </div>
     <div id="window">
       <h1>Billionaire Face Match</h1>
+      <nav class="edition-switch" aria-label="Rich Face Match editions">
+        <a class="edition-switch__item" href="https://saramjh.github.io/richChecker/" data-edition-link data-placement="header" data-target-edition="korea">Korea 47</a>
+        <span class="edition-switch__item edition-switch__item--current" aria-current="page">Global 100</span>
+      </nav>
+
       <hr>
       <!-- 소개(태그라인/포브스 배지/이용흐름/가치제안)는 "이걸 왜 해야 하는지" 모르는 첫
            방문자에게 필요한 정보다 — 이미 결과를 받은 사용자에겐 불필요한 반복이라는 피드백
@@ -164,9 +166,14 @@
             </svg>
           </button>
         </div>
-        <!-- 초기화는 업로드 전 화면에선 되돌릴 대상이 없어 불필요하다는 피드백 — 결과 영역
-             안으로 옮겨서 결과가 있을 때만(#resultsContainer 표시 여부에 자연히 종속) 나타나게
-             하고, 주 액션(저장/공유)과 헷갈리지 않도록 텍스트 링크에 가깝게 눌러둔다. -->
+        <!-- 다른 에디션은 번역 전환이 아니라 별도 표본을 다시 체험하는 후속 액션이다. -->
+        <section class="cross-edition-cta" aria-label="Korean rich-list edition">
+          <span class="cross-edition-kicker">Try another league</span>
+          <strong>Who is your match among Korea’s 2026 rich list?</strong>
+          <p>Compare the same six facial proportions with a separate 47-person Korean sample. You’ll choose your photo again on the next page.</p>
+          <a href="https://saramjh.github.io/richChecker/" data-edition-link data-placement="result" data-target-edition="korea">Try the Korean edition <span aria-hidden="true">→</span></a>
+        </section>
+        <!-- 다시 하기는 결과가 있을 때만 노출되는 보조 액션이다. -->
         <button id="reset" class="reset-link">Try another photo</button>
 
         <div class="ad-slot">

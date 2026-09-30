@@ -32,6 +32,10 @@ The acquisition funnel intentionally has no in-flow ad slot before analysis. A s
 
 Because `#resultsContainer` is `display:none` on page load, its AdSense unit must not be pushed until results become visible. `renderResults()` sets the container to `display:block` and then initializes that unit. Keep this ordering if the result layout changes.
 
+## Editions
+
+This app is part of a two-edition face-match experience. The Korean edition compares against a separate 47-person Korean rich-list sample, while the Global edition compares against a 100-person billionaire sample. They are distinct products rather than translated equivalents, so they cross-link with normal crawlable links instead of `hreflang`. Header and post-result links are measured with `cross_edition_click` (`placement`, `target_edition`, `link_url`).
+
 ## Validation
 
 Chrome checks cover English UI, 390px mobile and 1280px desktop overflow, six feature sections rendered with a synthetic UI fixture, PNG saving, opaque face hiding, and the download fallback when Web Share is unavailable. An actual upload of a non-face image loads the scanner and shows the expected English detection error; the upload panel remains usable. Successful real-person matching still requires the US dataset. Native OS sharing needs device-level verification.
