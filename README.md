@@ -55,6 +55,7 @@ A search or referral visitor should understand the result before choosing a phot
 - The new photo's `load` listener is installed before changing `src`, so MediaPipe starts only after that exact source has real pixel dimensions; the already-loaded placeholder cannot be mistaken for the selected photo. Selected pixels are snapshotted before any asynchronous model/module wait.
 - The file input is cleared immediately after capturing the `File`, so selecting the same file again still emits `change`. Upload analyses and transition cleanup are serialized, while face detection has a bounded two-attempt retry recorded as `detection_attempts`.
 - The primary similarity is rendered directly from the computed value instead of depending on a count-up animation, and loading cleanup has a timeout fallback if GSAP completion is throttled.
+- Result ads initialize asynchronously only after the core result is rendered; AdSense layout/network failures are isolated and cannot turn a successful analysis into an error.
 - analysis_complete is emitted only after the result UI renders successfully, and one attempt cannot emit both analysis_complete and analysis_error.
 - Analysis telemetry includes source, entry_ref, warm/cold model/data flags, file/image size, and per-stage timings.
 - Same-origin acquisition is classified into the legacy rich-tester page, Korean/English acquisition pages, and cross-edition traffic; external referrer URLs are not forwarded as event parameters.
