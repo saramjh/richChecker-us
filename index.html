@@ -46,7 +46,7 @@
     "@type": "WebApplication",
     "name": "Billionaire Face Match",
     "url": "https://saramjh.github.io/richChecker-us/",
-    "description": "An entertainment app comparing six facial proportions with AI-generated billionaire caricatures. Photos are processed on your device.",
+    "description": "A free entertainment web app that compares six facial proportions with a 100-person billionaire sample to show your Top 3 closest matches and standout feature. Photos are processed on your device.",
     "applicationCategory": "EntertainmentApplication",
     "operatingSystem": "Any",
     "inLanguage": "en-US",
@@ -82,27 +82,27 @@
     </div>
     <div id="window">
       <h1>Billionaire Face Match</h1>
-      <nav class="edition-switch" aria-label="Rich Face Match editions">
-        <a class="edition-switch__item" href="https://saramjh.github.io/richChecker/" data-edition-link data-placement="header" data-target-edition="korea">Korea 47</a>
-        <span class="edition-switch__item edition-switch__item--current" aria-current="page">Global 100</span>
-      </nav>
-
       <hr>
       <!-- 소개(태그라인/포브스 배지/이용흐름/가치제안)는 "이걸 왜 해야 하는지" 모르는 첫
            방문자에게 필요한 정보다 — 이미 결과를 받은 사용자에겐 불필요한 반복이라는 피드백
            반영, 결과가 나오면 이 블록 전체를 접는다(JS에서 처리, 다시 하면 재노출). -->
       <div id="introSection">
-        <p class="tagline">Which billionaire looks most like you?</p>
-        <p class="value-prop">Upload one photo to compare six facial proportions with <strong>100 billionaires</strong> and see your three closest overall matches.</p>
-        <p class="intro-proof">100-person billionaire sample · on-device analysis · no sign-up</p>
+        <p class="tagline">Which billionaire is your closest face match?</p>
+        <p class="value-prop">Compare six facial proportions with <strong>100 billionaires</strong> to see your Top 3 closest matches and standout feature.</p>
+        <p class="intro-proof">Top 3 · six-feature breakdown · save/share result card</p>
         <input type="file" id="uploadImage" accept="image/*" style="display: none;">
-        <button id="choosePhotoBtn" type="button">Choose a photo</button>
+        <button id="choosePhotoBtn" type="button">Choose a photo and start</button>
         <div id="uploadedImageContainer" class="is-initializing">
           <img id="uploadedImage" role="button" tabindex="0" aria-label="Choose a photo" src="assets/imgs/placeholder.svg" alt="Choose a photo to find your billionaire matches">
           <div id="initSpinner"></div>
           <div id="aiInfoBadge"></div>
         </div>
-        <p class="fine-print">Your photo is processed locally and is not uploaded for face matching. A clear, front-facing photo works best.</p>
+        <p class="fine-print">Free · no sign-up · your photo is processed locally and is not uploaded for face matching. A clear, front-facing photo works best.</p>
+        <nav class="edition-switch" aria-label="Rich Face Match editions">
+          <a class="edition-switch__item" href="https://saramjh.github.io/richChecker/" data-edition-link data-placement="intro" data-target-edition="korea">Korea 47</a>
+          <span class="edition-switch__item edition-switch__item--current" aria-current="page">Global 100</span>
+        </nav>
+
         <details class="method-note">
           <summary>How matching works</summary>
           <p>We compare forehead height, eye spacing, nose length, mouth width, chin length, and face shape against the 100-person sample.</p>

@@ -32,13 +32,17 @@ The acquisition funnel intentionally has no in-flow ad slot before analysis. A s
 
 Because `#resultsContainer` is `display:none` on page load, its AdSense unit must not be pushed until results become visible. `renderResults()` sets the container to `display:block` and then initializes that unit. Keep this ordering if the result layout changes.
 
+## First-screen conversion contract
+
+A search or referral visitor should understand the result before choosing a photo: result promise first, one primary photo CTA, then trust details. The empty upload panel stays compact at 220px and expands to the 400px photo preview only after a file is chosen. `photo_picker_opened` and `upload_started` include `source` so the primary CTA and upload-panel entry points can be compared.
+
 ## Matching regression contract
 
 `node tools/matching_contract.mjs` verifies self-match #1, sorted unique Top 3 results, integer similarity display, and Top-1/Top-3 retention under ±0.05σ perturbations of every feature for the full dataset. This protects the feature-vector/matching math contract; it is not a claim about image-level rotation or lighting robustness.
 
 ## Editions
 
-This app is part of a two-edition face-match experience. The Korean edition compares against a separate 47-person Korean rich-list sample, while the Global edition compares against a 100-person billionaire sample. They are distinct products rather than translated equivalents, so they cross-link with normal crawlable links instead of `hreflang`. Header and post-result links are measured with `cross_edition_click` (`placement`, `target_edition`, `link_url`).
+This app is part of a two-edition face-match experience. The Korean edition compares against a separate 47-person Korean rich-list sample, while the Global edition compares against a 100-person billionaire sample. They are distinct products rather than translated equivalents, so they cross-link with normal crawlable links instead of `hreflang`. The post-primary-action edition switch and post-result links are measured with `cross_edition_click` (`placement`, `target_edition`, `link_url`).
 
 ## Validation
 
