@@ -84,3 +84,7 @@ With a local server running, use `node tools/precompute.cjs --partial` to valida
 The current dataset contains 100 display caricatures and 100 match records. All caricatures pass face detection. Matching uses 99 real-person source-photo feature vectors; John Mars uses a clearly labeled caricature fallback because the available verified Forbes photograph is a full side profile. Exact results are recorded in `data/caricature-validation.json` and `data/photo-analysis-validation.json`.
 
 - 2026-09-30 runtime/UI contract: core MediaPipe/WASM/data warm-up begins during deferred runtime execution; every analysis explicitly restores loader visibility; share PNGs are prepared before share clicks; result spacing is owned by shared `--space-*` tokens and `.result-actions`.
+
+- 2026-09-30 transition contract: selecting a file must show the full-viewport processing state before FileReader/decode work begins; every analysis keeps that state perceptible for at least 900 ms; long results switch the page to top-aligned `result-mode`; reset collapses result DOM and restores scroll/initial geometry before revealing the intro; result motion starts only after the processing overlay exits.
+
+- 2026-09-30 transition follow-up: the processing overlay gets a paint opportunity before decode/detection; the offscreen share card is `display:none` except during capture so it cannot inflate document height; expensive html2canvas preparation is armed only when the result actions approach the viewport, never during the initial result reveal.
