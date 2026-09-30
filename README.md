@@ -40,6 +40,15 @@ A search or referral visitor should understand the result before choosing a phot
 
 `node tools/matching_contract.mjs` verifies self-match #1, sorted unique Top 3 results, integer similarity display, and Top-1/Top-3 retention under ±0.05σ perturbations of every feature for the full dataset. This protects the feature-vector/matching math contract; it is not a claim about image-level rotation or lighting robustness.
 
+
+## Runtime and funnel telemetry contract
+
+- MediaPipe analysis starts only after the selected image has decoded to real pixel dimensions.
+- analysis_complete is emitted only after the result UI renders successfully, and one attempt cannot emit both analysis_complete and analysis_error.
+- Analysis telemetry includes source, entry_ref, warm/cold model/data flags, file/image size, and per-stage timings.
+- Same-origin acquisition is classified into the legacy rich-tester page, Korean/English acquisition pages, and cross-edition traffic; external referrer URLs are not forwarded as event parameters.
+- node tools/runtime_contract.mjs enforces the decode gate, promise dedupe, post-render completion, and acquisition/performance telemetry contract in CI.
+
 ## Editions
 
 This app is part of a two-edition face-match experience. The Korean edition compares against a separate 47-person Korean rich-list sample, while the Global edition compares against a 100-person billionaire sample. They are distinct products rather than translated equivalents, so they cross-link with normal crawlable links instead of `hreflang`. The post-primary-action edition switch and post-result links are measured with `cross_edition_click` (`placement`, `target_edition`, `link_url`).
