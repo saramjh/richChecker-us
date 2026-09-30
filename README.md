@@ -41,6 +41,15 @@ A search or referral visitor should understand the result before choosing a phot
 `node tools/matching_contract.mjs` verifies self-match #1, sorted unique Top 3 results, integer similarity display, and Top-1/Top-3 retention under ±0.05σ perturbations of every feature for the full dataset. This protects the feature-vector/matching math contract; it is not a claim about image-level rotation or lighting robustness.
 
 
+## Design language contract
+
+- The established purple/gold face-reading and trading-card theme remains the product identity.
+- On-screen type uses semantic `--type-*` roles instead of one-off sizes. The minimum display role is 12px (`--type-micro`); H1 uses `--type-hero`, while body copy and controls use body roles.
+- Decorative serif type is reserved for display/result identity; body copy, explanations, and controls use the body stack.
+- `--gold-dim` is border/decor only. Readable text uses contrast-safe gold/text roles.
+- Primary photo/save actions stay at least 48px high, secondary controls stay 40–44px or larger, and mobile content does not apply nested width shrinkage.
+- Korean and Global stylesheets stay structurally identical except for locale-appropriate font stacks. `node tools/design_contract.mjs` enforces typography roles, font roles, readable color usage, target sizing, mobile width, and radar-label minimum size in CI.
+
 ## Runtime and funnel telemetry contract
 
 - MediaPipe analysis starts only after the selected image has decoded to real pixel dimensions.
