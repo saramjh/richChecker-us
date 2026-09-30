@@ -24,13 +24,17 @@ The site is launched and technically crawlable: `robots.txt` allows crawling, `i
 
 The app manifest is available in `data/people.json`. It contains all 100 records and maps the composite image by `exportOrder`, so tied Forbes ranks cannot shift later portraits. Empty portrait cells remain in the manifest for auditability and are excluded from matching.
 
-Overall matching now ranks the three closest people by six-feature z-score distance. The dominant feature remains as a separate explainability layer that names the closest person on that one feature. Matching keeps z-score clamping and the 3% similarity floor. The UI calls the linear z-score transform a feature score, not a statistical percentile. Image capture retains pre-cropping and opaque face hiding.
+Overall matching ranks the three closest people by six-feature z-score distance. The dominant feature remains as a separate explainability layer that names the closest person on that one feature. Matching keeps z-score clamping and the 3% similarity floor; every visible/share similarity is the same rounded integer display score while ranking continues to use raw distance. The UI calls the linear z-score transform a feature score, not a statistical percentile. Image capture retains pre-cropping and opaque face hiding.
 
 ## Ad placement notes
 
 The acquisition funnel intentionally has no in-flow ad slot before analysis. A single manual `.ad-slot` lives inside `#resultsContainer` after the result/share controls so monetization does not interrupt photo selection.
 
 Because `#resultsContainer` is `display:none` on page load, its AdSense unit must not be pushed until results become visible. `renderResults()` sets the container to `display:block` and then initializes that unit. Keep this ordering if the result layout changes.
+
+## Matching regression contract
+
+`node tools/matching_contract.mjs` verifies self-match #1, sorted unique Top 3 results, integer similarity display, and Top-1/Top-3 retention under ±0.05σ perturbations of every feature for the full dataset. This protects the feature-vector/matching math contract; it is not a claim about image-level rotation or lighting robustness.
 
 ## Editions
 

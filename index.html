@@ -63,13 +63,12 @@
   <!-- 전부 defer로 로드한다(파싱을 막지 않기 위해). script.js는 맨 먼저 둔다 — defer 스크립트는
        "문서 순서대로 실행"되므로, script.js를 라이브러리들 뒤에 두면 그 라이브러리들의 실행이
        전부 끝날 때까지 업로드/초기화 버튼 리스너가 안 붙는 채로 남는다. script.js 안에서 외부
-       라이브러리(gsap/Tone/faceapi 등)를 쓰는 코드는 전부 "나중에 호출되는 함수 안"에만 있고
+       라이브러리(gsap/Tone 등)를 쓰는 코드는 전부 "나중에 호출되는 함수 안"에만 있고
        최상단에서 즉시 실행되는 건 없으므로, 순서를 앞으로 당겨도 안전하다. -->
   <script defer src="js/script.js"></script>
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/face-api.min.js"></script>
 </head>
 
 <body>
@@ -103,7 +102,7 @@
           <div id="initSpinner"></div>
           <div id="aiInfoBadge"></div>
         </div>
-        <p class="fine-print">Your photo stays on your device. A clear, front-facing photo works best.</p>
+        <p class="fine-print">Your photo is processed locally and is not uploaded for face matching. A clear, front-facing photo works best.</p>
         <details class="method-note">
           <summary>How matching works</summary>
           <p>We compare forehead height, eye spacing, nose length, mouth width, chin length, and face shape against the 100-person sample.</p>
@@ -188,7 +187,7 @@
            안에 욱여넣었더니 두 번째 줄이 overflow:hidden에 잘려서 아예 안 보였다 — 카드 하단의
            일반 흐름 안에 작은 글씨 각주로 옮긴다. -->
       <p class="fine-print">For entertainment only. Facial features do not predict wealth, personality, or future success. Comparisons use AI-generated caricatures, not photographs of the people named.</p>
-      <p id="privacyNote">Your photo is analyzed on your device. It is never uploaded or saved by this site. Saving or sharing a card is your choice.</p>
+      <p id="privacyNote">Your face-match photo is processed locally and is not uploaded or stored by this site. Saving or sharing a result card is your choice.</p>
     </div>
   </div>
 
