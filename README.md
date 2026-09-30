@@ -52,11 +52,13 @@ A search or referral visitor should understand the result before choosing a phot
 
 ## Runtime and funnel telemetry contract
 
-- MediaPipe analysis starts only after the selected image has decoded to real pixel dimensions, and the selected pixels are snapshotted to the detection canvas before any asynchronous model/module wait. The initial placeholder is HTML-owned and must never overwrite a user selection from a late window load.
+- The new photo's `load` listener is installed before changing `src`, so MediaPipe starts only after that exact source has real pixel dimensions; the already-loaded placeholder cannot be mistaken for the selected photo. Selected pixels are snapshotted before any asynchronous model/module wait.
+- The file input is cleared immediately after capturing the `File`, so selecting the same file again still emits `change`. Upload analyses and transition cleanup are serialized, while face detection has a bounded two-attempt retry recorded as `detection_attempts`.
+- The primary similarity is rendered directly from the computed value instead of depending on a count-up animation, and loading cleanup has a timeout fallback if GSAP completion is throttled.
 - analysis_complete is emitted only after the result UI renders successfully, and one attempt cannot emit both analysis_complete and analysis_error.
 - Analysis telemetry includes source, entry_ref, warm/cold model/data flags, file/image size, and per-stage timings.
 - Same-origin acquisition is classified into the legacy rich-tester page, Korean/English acquisition pages, and cross-edition traffic; external referrer URLs are not forwarded as event parameters.
-- node tools/runtime_contract.mjs enforces the decode gate, first-upload snapshot, load-time placeholder race prevention, promise dedupe, post-render completion, and acquisition/performance telemetry contract in CI.
+- node tools/runtime_contract.mjs enforces the exact-source image gate, same-file retry, serialized uploads, bounded detection retry, first-upload snapshot, promise dedupe, post-render completion, and acquisition/performance telemetry contract in CI.
 
 ## Editions
 
