@@ -108,9 +108,10 @@ async function ensureMediapipeModules() {
 			import("./vendor/mediapipe/vision_bundle.mjs"),
 			import("./faceFeatures.js"),
 			import("./matchMath.js"),
+			import("./faceMotion.js?v=20261009-flow1"),
 		])
-			.then(([vision, features, matchMath]) => {
-				mediapipeModules = { ...vision, ...features, ...matchMath }
+			.then(([vision, features, matchMath, faceMotion]) => {
+				mediapipeModules = { ...vision, ...features, ...matchMath, ...faceMotion }
 				return mediapipeModules
 			})
 			.catch((err) => {
@@ -144,8 +145,27 @@ function invalidateShareArtifact() {
 // 카드 양쪽의 "나" 사진에 블러를 걸지 여부. 새 결과가 렌더될 때도 이 선택을 유지한다
 // (한 세션 안에서 여러 번 테스트해도 매번 다시 켤 필요가 없도록).
 let faceHidden = false
+let resultFaceGeometry = null
+let resultFaceMotion = null
+
+function clearResultFaceMotion() {
+	resultFaceMotion?.cancel()
+	resultFaceMotion = null
+	resultFaceGeometry = null
+}
+
+function revealResultFaceMotion() {
+	if (faceHidden || !resultFaceGeometry) return
+	resultFaceMotion?.cancel()
+	resultFaceMotion = mediapipeModules.mountFaceMotion(
+		document.querySelector("#topMatchPhotos .topMatch-photo-box:first-child .photo-frame"),
+		resultFaceGeometry,
+		{ gsap: window.gsap, reducedMotion: prefersReducedMotion(), cropped: true, transient: true },
+	)
+}
 
 function applyFaceHiddenState() {
+	if (faceHidden) clearResultFaceMotion()
 	const topMatchUserImg = document.querySelector("#topMatchPhotos .topMatch-photo-box:first-child img")
 	const shareCardUserImg = document.getElementById("shareCardUserPhoto")
 	if (topMatchUserImg) topMatchUserImg.classList.toggle("face-hidden", faceHidden)
@@ -231,10 +251,6 @@ function topExpressionFromBlendshapes(categories) {
 	return { label, score: topScore }
 }
 
-// 초기 placeholder는 index.html의 <img src>가 소유한다.
-// load 시점에 src를 다시 쓰면 첫 방문에서 사용자가 고른 사진을 뒤늦은 window load가
-// placeholder로 덮어써 첫 분석만 face_not_detected가 되는 레이스가 생긴다.
-
 // 이미지와 명시적 CTA가 같은 파일 선택 흐름을 사용한다. 어느 진입점이 실제 선택으로
 // 이어지는지 측정해 첫 화면의 기능 접근성을 검증한다.
 let lastPhotoPickerSource = "unknown"
@@ -248,6 +264,7 @@ function openPhotoPicker(source = "unknown") {
 
 document.getElementById("uploadedImage").addEventListener("click", () => openPhotoPicker("upload_panel"))
 document.getElementById("choosePhotoBtn").addEventListener("click", () => openPhotoPicker("primary_cta"))
+document.getElementById("photoSlot").addEventListener("click", () => openPhotoPicker("photo_slot"))
 
 document.getElementById("uploadedImage").addEventListener("keydown", (event) => {
 	if (event.key === "Enter" || event.key === " ") {
@@ -255,12 +272,6 @@ document.getElementById("uploadedImage").addEventListener("keydown", (event) => 
 		openPhotoPicker("upload_panel_keyboard")
 	}
 })
-
-// 위 리스너를 붙이는 줄이 실행됐다는 건 이 시점부터 클릭이 실제로 동작한다는 뜻이므로,
-// 그제서야 "초기화 중" 표시를 걷어낸다. index.html에서 모든 외부 스크립트를 defer로 바꾸고
-// script.js를 맨 마지막에 두었기 때문에, 이 줄이 실행되는 시점엔 GSAP/Tone 등
-// 의존 라이브러리도 이미 전부 로드가 끝나 있다.
-document.getElementById("uploadedImageContainer").classList.remove("is-initializing")
 
 // 이미지가 실제 픽셀 크기까지 준비되기 전에 MediaPipe를 시작하면 느린 모바일에서
 // naturalWidth/Height가 0인 캔버스가 만들어질 수 있다. src 설정 후 decode/load 완료를 보장한다.
@@ -296,7 +307,7 @@ function setImageSourceAndWait(img, src) {
 let uploadTaskChain = Promise.resolve()
 function waitForUiPaint() {
 	return new Promise((resolve) => {
-		if (typeof requestAnimationFrame === "function") requestAnimationFrame(() => resolve())
+		if (typeof requestAnimationFrame === "function") requestAnimationFrame(() => requestAnimationFrame(() => resolve()))
 		else setTimeout(resolve, 16)
 	})
 }
@@ -326,13 +337,17 @@ document.getElementById("uploadImage").addEventListener("change", function () {
 		uploadTaskChain = uploadTaskChain.catch(() => {}).then(async () => {
 			await waitForUiPaint()
 			const uploadedImage = document.getElementById("uploadedImage")
-			uploadedImage.style.display = "block"
-			document.getElementById("uploadedImageContainer").classList.add("has-photo")
+			const uploadContainer = document.getElementById("uploadedImageContainer")
+			uploadContainer.hidden = true
+			document.getElementById("photoSlot").hidden = false
 			clearResults()
 
 			const imageReadyStartedAt = performance.now()
 			try {
 				await setImageSourceAndWait(uploadedImage, dataUrl)
+				uploadContainer.classList.add("has-photo")
+				uploadContainer.hidden = false
+				document.getElementById("photoSlot").hidden = true
 			} catch (err) {
 				console.error(err)
 				trackEvent("upload_error", {
@@ -540,6 +555,7 @@ async function processImage(context = {}, loadingSessionId = null) {
 	const detectionCanvas = toDetectionCanvas(document.getElementById("uploadedImage"))
 
 	const activeLoadingSessionId = loadingSessionId || showLoadingModal()
+	displayLoadingFace(detectionCanvas, activeLoadingSessionId)
 	trackEvent("analysis_started", eventParams())
 
 	try {
@@ -563,8 +579,12 @@ async function processImage(context = {}, loadingSessionId = null) {
 		}
 
 		stage = "detect"
+		if (activeLoadingSessionId !== loadingRunId) return
+		setLoadingStage(1, activeLoadingSessionId)
+		await waitForUiPaint()
 		const detectionStartedAt = performance.now()
 		const detectionResult = await detectFaceWithRetry(landmarker, detectionCanvas)
+		if (activeLoadingSessionId !== loadingRunId) return
 		const detection = detectionResult.detection
 		const analyzedCanvas = detectionResult.canvas
 		timings.detection_ms = Math.round(performance.now() - detectionStartedAt)
@@ -576,6 +596,12 @@ async function processImage(context = {}, loadingSessionId = null) {
 		}
 
 		stage = "match"
+		const faceGeometry = modules.createFaceGeometry(landmarks, analyzedCanvas.width, analyzedCanvas.height)
+		displayLoadingFace(analyzedCanvas, activeLoadingSessionId)
+		loadingFaceMotion = modules.mountFaceMotion(document.getElementById("analysisGeometry"), faceGeometry, {
+			gsap: window.gsap, reducedMotion: prefersReducedMotion(),
+		})
+		setLoadingStage(2, activeLoadingSessionId)
 		const matchingStartedAt = performance.now()
 		const featureObj = computeFeatures(landmarks, analyzedCanvas.width, analyzedCanvas.height)
 		const uploadedFeatures = FEATURE_KEYS.map((key) => featureObj[key])
@@ -647,8 +673,10 @@ async function processImage(context = {}, loadingSessionId = null) {
 		timings.matching_ms = Math.round(performance.now() - matchingStartedAt)
 
 		stage = "render"
+		if (activeLoadingSessionId !== loadingRunId) return
+		setLoadingStage(3, activeLoadingSessionId)
 		const renderStartedAt = performance.now()
-		renderResults({ expression }, radar, archetype, overallMatches, standoutMatch)
+		renderResults({ expression }, radar, archetype, overallMatches, standoutMatch, faceGeometry)
 		timings.render_ms = Math.round(performance.now() - renderStartedAt)
 
 		// 완료는 결과 UI까지 실제 생성된 뒤에만 기록한다. renderResults가 실패하면
@@ -668,7 +696,7 @@ async function processImage(context = {}, loadingSessionId = null) {
 		const resultsVisible = document.getElementById("resultsContainer").style.display !== "none"
 		if (resultsVisible) window.scrollTo({ top: 0, left: 0, behavior: "auto" })
 		await hideLoadingModal(activeLoadingSessionId)
-		if (resultsVisible) revealRenderedResults()
+		if (resultsVisible && activeLoadingSessionId === loadingRunId) revealRenderedResults()
 		else if (typeof gsap !== "undefined") gsap.set(["#introSection", "#uploadedImageContainer"], { clearProps: "transform,opacity" })
 	}
 }
@@ -905,7 +933,7 @@ function renderFeatureReadings(radar) {
 				? `
 					<div class="reading-match">
 						<img class="reading-match-thumb" src="${nearest.image}" alt="${nearest.name}">
-						<p>✦ Closest feature: <strong>${nearest.name}</strong>${nearest.rank ? ` (US #${nearest.rank})` : ""}</p>
+						<div class="reading-match-copy"><span class="reading-match-label">Closest match on this feature</span><strong>${nearest.name}</strong><span>${nearest.title || ""}</span>${nearest.rank ? `<span>Forbes US #${nearest.rank}</span>` : ""}</div>
 					</div>
 				`
 				: ""
@@ -921,8 +949,8 @@ function renderFeatureReadings(radar) {
 						<span class="reading-label">${icon(reading.icon)}${reading.label}${tooltipHtml}</span>
 					</div>
 					${barHtml}
-					${matchHtml}
 					<p>${reading[tier]}</p>
+					${matchHtml}
 				</div>
 			`
 		})
@@ -1037,7 +1065,6 @@ function renderTopMatch(match, radar, tierLabel, tierDesc) {
 	// 등급 판정("눈에 띄는 특징" 등)은 예전엔 이 카드 맨 위에 별도 금색 박스로 떠서, 카드 안에
 	// 박스가 또 있는 것처럼 스타일이 어긋나 보였다는 피드백 — 레이더 차트 아래 박스 없는
 	// 안내문에 자연스럽게 얹는다(renderRadarChart 안에서 처리).
-	const radarHtml = radar ? renderRadarChart(radar.labels, radar.user, radar.match, radar.matchLabel, tierLabel, tierDesc) : ""
 
 	// "재벌 얼굴을 텍스트로만 말하지 말고 실제로 보여달라"는 피드백 반영 — 카드 안에 바로
 	// "나 vs 매칭 인물" 사진을 나란히 놓는다(예전엔 저장용 공유 카드에만 있던 구성). 일치율
@@ -1073,7 +1100,6 @@ function renderTopMatch(match, radar, tierLabel, tierDesc) {
 			${match.title ? `<div id="topMatchTitle">${match.title}</div>` : ""}
 			${badges.length ? `<div id="topMatchBadges">${badges.join("")}</div>` : ""}
 			${photosHtml}
-			${radarHtml}
 			${achievementHtml}
 			${creditHtml}
 		</div>
@@ -1096,32 +1122,44 @@ function renderRunnerUps(matches) {
 	return `<div class="runner-ups"><div class="runner-ups-heading">Other close matches</div>${rows}<div class="runner-ups-note">Based on all six facial proportions</div></div>`
 }
 
-function initializeResultAds() {
+function initializeBottomAd() {
 	if (["localhost", "127.0.0.1"].includes(location.hostname)) return
-	const attempt = (remainingRetries) => {
-		let waitingForLayout = false
-		document.querySelectorAll("#resultsContainer .adsbygoogle").forEach((ins) => {
-			if (ins.dataset.adsbygoogleStatus) return
-			if (ins.getBoundingClientRect().width <= 0) {
-				waitingForLayout = true
-				return
-			}
-			try {
-				(window.adsbygoogle = window.adsbygoogle || []).push({})
-			} catch (err) {
-				// 광고 네트워크/레이아웃 오류는 분석 결과를 실패로 바꾸면 안 된다.
-				console.warn("Result ad initialization skipped:", err)
-			}
-		})
-		if (waitingForLayout && remainingRetries > 0) {
-			setTimeout(() => attempt(remainingRetries - 1), 250)
+	const attempt = remainingRetries => {
+		const ins = document.querySelector("#bottomAd .adsbygoogle")
+		if (!ins || ins.dataset.adsbygoogleStatus || ins.dataset.adRequested) return
+		if (ins.getBoundingClientRect().width <= 0) {
+			if (remainingRetries > 0) setTimeout(() => attempt(remainingRetries - 1), 250)
+			return
+		}
+		try {
+			(window.adsbygoogle = window.adsbygoogle || []).push({})
+			ins.dataset.adRequested = "true"
+		} catch (err) {
+			console.warn("Bottom ad initialization skipped:", err)
 		}
 	}
-
 	requestAnimationFrame(() => setTimeout(() => attempt(2), 0))
 }
 
-function renderResults(aiInfo, radar, archetype, topMatches, standoutMatch) {
+let bottomAdObserver = null
+function observeBottomAd() {
+	if (["localhost", "127.0.0.1"].includes(location.hostname) || bottomAdObserver) return
+	const target = document.getElementById("bottomAd")
+	if (!target) return
+	if (typeof IntersectionObserver === "undefined") {
+		initializeBottomAd()
+		return
+	}
+	bottomAdObserver = new IntersectionObserver(entries => {
+		if (entries.some(entry => entry.isIntersecting)) initializeBottomAd()
+	}, { rootMargin: "0px", threshold: 0.01 })
+	bottomAdObserver.observe(target)
+}
+observeBottomAd()
+
+function renderResults(aiInfo, radar, archetype, topMatches, standoutMatch, faceGeometry = null) {
+	clearResultFaceMotion()
+	resultFaceGeometry = faceGeometry
 	const topMatch = topMatches[0]
 	const topSimilarity = topMatch.similarityDisplay
 	const readingHtml = renderFeatureReadings(radar)
@@ -1150,7 +1188,15 @@ function renderResults(aiInfo, radar, archetype, topMatches, standoutMatch) {
 			<div id="archetypeBadge">
 				<span id="archetypeEyebrow">Your standout feature</span>
 				<span id="archetypeName">${icon(FEATURE_READINGS[archetype.featureKey].icon, "archetype-icon")}${archetype.name}</span>
-				<p id="archetypeDesc">${archetype.featureLabel} · ${archetype.rankText} — ${archetype.desc}<span class="standout-match">Closest on this feature: <strong>${standoutMatch.name}</strong>.</span></p>
+				<p id="archetypeDesc">${archetype.featureLabel} · ${archetype.rankText} — ${archetype.desc}</p>
+				<div class="feature-person">
+					<span class="feature-person-label">Closest match on this feature</span>
+					<div class="feature-person-row">
+						<img src="${standoutMatch.image}" alt="${standoutMatch.name}${standoutMatch.isIllustration ? " caricature" : ""}" width="64" height="80" loading="lazy">
+						<div class="feature-person-copy"><strong>${standoutMatch.name}</strong><span>${standoutMatch.title || ""}</span>${standoutMatch.rank ? `<span>Forbes US ${standoutMatch.rank}</span>` : ""}${standoutMatch.achievement ? `<p>${standoutMatch.achievement}</p>` : ""}</div>
+					</div>
+					${standoutMatch.isIllustration ? '<span class="feature-person-credit">Portrait is an AI-generated caricature.</span>' : ""}
+				</div>
 			</div>
 		`
 		: ""
@@ -1160,10 +1206,14 @@ function renderResults(aiInfo, radar, archetype, topMatches, standoutMatch) {
 		<div id="resultRate">
 			${topMatchHtml}
 			${runnerUpsHtml}
-			${archetypeHtml ? divider + archetypeHtml : ""}
-			${readingHtml ? divider + readingHtml : ""}
 		</div>
 	`
+	document.getElementById("resultPreview").innerHTML = archetypeHtml
+	document.getElementById("resultDetailsContent").innerHTML = `
+		${renderRadarChart(radar.labels, radar.user, radar.match, radar.matchLabel, tierLabel, tierDesc)}
+		${readingHtml ? divider + readingHtml : ""}
+	`
+	document.getElementById("resultDetails").open = false
 
 	const resultsEl = document.getElementById("resultsContainer")
 	resultsEl.style.display = "block"
@@ -1180,7 +1230,7 @@ function renderResults(aiInfo, radar, archetype, topMatches, standoutMatch) {
 	lastResultSummary = { topMatchId: topMatch.id, topMatchName: topMatch.name, archetypeName: archetype && archetype.name, topSimilarity: topSimilarityText }
 	shareCardReadyPromise = populateShareCard(topMatch, topSimilarityText, tierLabel, archetype, radar, shareResultGeneration)
 	applyFaceHiddenState()
-	initializeResultAds()
+	observeBottomAd()
 }
 
 function revealRenderedResults() {
@@ -1189,6 +1239,7 @@ function revealRenderedResults() {
 	const revealEl = document.getElementById("topMatchReveal")
 
 	if (revealEl) revealEl.classList.add("revealed")
+	revealResultFaceMotion()
 	if (prefersReducedMotion() || typeof gsap === "undefined") {
 		resultsEl.style.opacity = "1"
 		resultsEl.style.transform = "none"
@@ -1315,6 +1366,7 @@ async function populateShareCard(topMatch, topSimilarity, tierLabel, archetype, 
 // scale:2.5로 캡처하면 실제 폭은 900px. 모바일 공유 파일 생성 지연을 줄이면서 텍스트 해상도를 유지한다.
 async function captureShareCard() {
 	if (shareCardReadyPromise) await shareCardReadyPromise
+	await document.fonts.ready
 	const el = document.getElementById("shareCard")
 	el.style.display = "flex"
 	try {
@@ -1455,7 +1507,9 @@ function commitIntroState() {
 	resultsEl.style.opacity = ""
 	resultsEl.style.transform = ""
 	document.body.classList.remove("result-mode")
-	uploadedImage.src = "assets/imgs/placeholder.svg"
+	uploadContainer.hidden = true
+	uploadedImage.removeAttribute("src")
+	document.getElementById("photoSlot").hidden = false
 	uploadContainer.classList.remove("has-photo")
 	document.getElementById("uploadImage").value = ""
 	clearResults()
@@ -1465,9 +1519,7 @@ function commitIntroState() {
 	window.scrollTo({ top: 0, left: 0, behavior: "auto" })
 }
 
-let resetTransitionPromise = null
 function resetToIntro() {
-	if (resetTransitionPromise) return resetTransitionPromise
 	const introEl = document.getElementById("introSection")
 	const resultsEl = document.getElementById("resultsContainer")
 	const reducedMotion = prefersReducedMotion()
@@ -1479,23 +1531,18 @@ function resetToIntro() {
 	commitIntroState()
 
 	if (reducedMotion || typeof gsap === "undefined") return Promise.resolve()
-	resetTransitionPromise = new Promise((resolve) => {
-		gsap.fromTo(introEl,
-			{ opacity: 0, y: 8, scale: 0.995 },
-			{
-				opacity: 1,
-				y: 0,
-				scale: 1,
-				duration: MOTION.resetEnter,
-				ease: MOTION.easeOut,
-				clearProps: "opacity,transform",
-				onComplete: resolve,
-			},
-		)
-	}).finally(() => {
-		resetTransitionPromise = null
-	})
-	return resetTransitionPromise
+	gsap.fromTo(introEl,
+		{ opacity: 0, y: 8, scale: 0.995 },
+		{
+			opacity: 1,
+			y: 0,
+			scale: 1,
+			duration: MOTION.resetEnter,
+			ease: MOTION.easeOut,
+			clearProps: "opacity,transform",
+		},
+	)
+	return Promise.resolve()
 }
 
 document.getElementById("reset").addEventListener("click", () => {
@@ -1503,12 +1550,9 @@ document.getElementById("reset").addEventListener("click", () => {
 	resetToIntro()
 })
 
-// 실제 분석이 이보다 빨리 끝나도(MediaPipe는 로컬에서 꽤 빠름) 최소 이만큼은 "안개" 상태를
-// 유지한다. 그렇지 않으면 들어오는 애니메이션과 나가는 애니메이션이 서로 충돌해 뚝뚝 끊겨 보인다.
-const MIN_LOADING_MS = 900
-let loadingStartedAt = 0
+// Processing owns the loader lifetime; result-photo motion never holds completion.
 let loadingRunId = 0
-let loadingMessageTimer = null
+let loadingFaceMotion = null
 
 const LOADING_MESSAGES = [
 	"Preparing your photo…",
@@ -1517,29 +1561,35 @@ const LOADING_MESSAGES = [
 	"Putting your closest matches together…",
 ]
 
-function startLoadingMessages() {
-	stopLoadingMessages()
+function setLoadingStage(index, runId = loadingRunId) {
+	if (runId !== loadingRunId) return
 	const el = document.getElementById("loadingStatus")
 	if (!el) return
-	let i = 0
-	el.textContent = LOADING_MESSAGES[0]
-	loadingMessageTimer = setInterval(() => {
-		i = (i + 1) % LOADING_MESSAGES.length
-		el.textContent = LOADING_MESSAGES[i]
-	}, 650)
+	el.textContent = LOADING_MESSAGES[index]
+	document.getElementById("loadingModal").dataset.stage = String(index)
 }
 
-function stopLoadingMessages() {
-	if (loadingMessageTimer) {
-		clearInterval(loadingMessageTimer)
-		loadingMessageTimer = null
-	}
+function clearLoadingFace() {
+	loadingFaceMotion?.cancel()
+	loadingFaceMotion = null
+	document.getElementById("analysisGeometry").replaceChildren()
+	const photo = document.getElementById("analysisPhoto")
+	photo.width = photo.height = 0
+	document.getElementById("analysisPhotoStage").hidden = true
+}
+
+function displayLoadingFace(source, runId) {
+	if (runId !== loadingRunId) return
+	const photo = document.getElementById("analysisPhoto")
+	photo.width = source.width
+	photo.height = source.height
+	photo.getContext("2d").drawImage(source, 0, 0)
+	document.getElementById("analysisPhotoStage").hidden = false
 }
 
 function showLoadingModal() {
 	loadingRunId += 1
 	const runId = loadingRunId
-	loadingStartedAt = performance.now()
 	const modal = document.getElementById("loadingModal")
 	const content = modal.querySelector(".modal-content")
 	const progress = document.getElementById("progressBarInner")
@@ -1555,7 +1605,8 @@ function showLoadingModal() {
 		void progress.offsetWidth
 		progress.style.animation = ""
 	}
-	startLoadingMessages()
+	clearLoadingFace()
+	setLoadingStage(0, runId)
 
 	if (reducedMotion || typeof gsap === "undefined") {
 		modal.style.opacity = "1"
@@ -1581,13 +1632,11 @@ async function hideLoadingModal(runId = loadingRunId) {
 	const modal = document.getElementById("loadingModal")
 	const content = modal.querySelector(".modal-content")
 	const reducedMotion = prefersReducedMotion()
-	const elapsed = performance.now() - loadingStartedAt
-	if (elapsed < MIN_LOADING_MS) await new Promise((resolve) => setTimeout(resolve, MIN_LOADING_MS - elapsed))
 	if (runId !== loadingRunId) return
-	stopLoadingMessages()
 
 	const finalize = () => {
 		if (runId !== loadingRunId) return
+		clearLoadingFace()
 		modal.style.display = "none"
 		modal.style.opacity = ""
 		modal.style.pointerEvents = ""
@@ -1621,6 +1670,7 @@ async function hideLoadingModal(runId = loadingRunId) {
 }
 
 function clearResults() {
+	clearResultFaceMotion()
 	// 결과 리스트 및 평균 유사도 초기화
 	cancelShareArtifactPreparation()
 	shareResultGeneration += 1
@@ -1628,7 +1678,12 @@ function clearResults() {
 	shareCardReadyPromise = null
 	invalidateShareArtifact()
 	document.getElementById("averageResult").textContent = ""
+	document.getElementById("resultDetailsContent").replaceChildren()
+	document.getElementById("resultPreview").replaceChildren()
+	document.getElementById("resultDetails").open = false
 	document.getElementById("aiInfoBadge").textContent = ""
+	document.getElementById("shareLinkFallback").hidden = true
+	document.getElementById("shareLinkInput").value = ""
 }
 
 /* share function */
@@ -1677,12 +1732,12 @@ function buildChallengeUrl() {
 	return canonical.toString()
 }
 
-function trackShareLinkCreated(method) {
-	if (!lastResultSummary) return
+function trackShareLinkCreated(method, summary = lastResultSummary) {
+	if (!summary) return
 	trackEvent("share_link_created", {
 		method,
-		match_id: lastResultSummary.topMatchId,
-		score: lastResultSummary.topSimilarity,
+		match_id: summary.topMatchId,
+		score: summary.topSimilarity,
 	})
 }
 
@@ -1697,42 +1752,91 @@ async function copyChallengeUrl(challengeUrl) {
 	}
 }
 
+let shareInFlight = false
+let shareAttemptId = 0
+
 function sharePreparedCard(fallbackMessage, method) {
-	if (!ensurePreparedShareArtifact()) return
+	const summary = lastResultSummary && { ...lastResultSummary }
+	if (!summary) return
 	const challengeUrl = buildChallengeUrl()
-	const file = new File([preparedShareBlob], SHARE_FILE_NAME, { type: "image/png" })
-	const payload = { files: [file], title: SHARE_TITLE, text: buildShareText(), url: challengeUrl }
-	if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
-		try {
-			navigator.share(payload).then(() => trackShareLinkCreated(method)).catch((err) => {
-				if (err.name === "AbortError") return
-				console.warn("Sharing failed", err)
-				showToast("The share sheet could not be opened. Save the card and attach it in your preferred app.")
-			})
-			return
-		} catch (err) { console.warn("Sharing failed", err) }
+	const blob = preparedShareBlob
+	const generation = shareResultGeneration
+	const version = shareArtifactVersion
+	const params = {
+		method, attempt_id: ++shareAttemptId,
+		match_id: summary.topMatchId, score: summary.topSimilarity,
+		card_ready: blob ? 1 : 0,
 	}
-	if (navigator.share) {
-		navigator.share({ title: SHARE_TITLE, text: buildShareText(), url: challengeUrl })
-			.then(() => trackShareLinkCreated(method + "_link"))
-			.catch((err) => { if (err.name !== "AbortError") console.warn("Link sharing failed", err) })
+	trackEvent("share_click", params)
+	if (shareInFlight) {
+		trackEvent("share_busy", params)
 		return
 	}
-	copyChallengeUrl(challengeUrl).then((copied) => {
-		downloadPreparedShareBlob(copied ? `${fallbackMessage} The comparison link was also copied to your clipboard.` : fallbackMessage)
-		if (copied) trackShareLinkCreated(method + "_clipboard")
-	})
+	const payload = { title: SHARE_TITLE, text: buildShareText(), url: challengeUrl }
+	if (blob) {
+		const file = new File([blob], SHARE_FILE_NAME, { type: "image/png" })
+		try {
+			if (navigator.canShare?.({ files: [file] })) payload.files = [file]
+		} catch (err) { console.warn("File sharing unavailable", err) }
+	}
+	const content = payload.files ? "image_link" : "link"
+	const finish = (outcome, transport, err, sharedContent = content) => {
+		shareInFlight = false
+		trackEvent("share_" + outcome, { ...params, content: sharedContent, transport, ...(err ? { error_type: err.name || "Error" } : {}) })
+		if (outcome === "success") trackShareLinkCreated(method, summary)
+		if (outcome === "error" && generation === shareResultGeneration) showToast("Sharing failed. Copy the comparison link and send it to your friend.")
+	}
+	const exposeLink = () => {
+		if (generation !== shareResultGeneration) return
+		const fallback = document.getElementById("shareLinkFallback")
+		const input = document.getElementById("shareLinkInput")
+		input.value = challengeUrl
+		fallback.hidden = false
+		input.focus()
+		input.select()
+	}
+	shareInFlight = true
+	// Call the native share API in the click stack, before any async card preparation.
+	if (navigator.share) {
+		try {
+			Promise.resolve(navigator.share(payload)).then(
+				() => finish("success", "native"),
+				err => {
+					finish(err.name === "AbortError" ? "cancel" : "error", "native", err)
+					if (err.name !== "AbortError") exposeLink()
+				},
+			)
+		} catch (err) {
+			finish(err.name === "AbortError" ? "cancel" : "error", "native", err)
+			if (err.name !== "AbortError") exposeLink()
+		}
+	} else {
+		copyChallengeUrl(challengeUrl).then(copied => {
+			if (copied) {
+				let downloaded = false
+				if (generation === shareResultGeneration) {
+					if (blob && version === shareArtifactVersion) downloaded = downloadPreparedShareBlob(fallbackMessage)
+					else showToast("Comparison link copied. Send it to a friend.")
+				}
+				finish("success", downloaded ? "clipboard_download" : "clipboard", null, downloaded ? "image_link" : "link")
+			} else {
+				finish("error", "clipboard", { name: "ClipboardUnavailable" })
+				exposeLink()
+			}
+		})
+	}
+	if (!blob) prepareShareArtifact().catch(err => console.warn("Share image preparation skipped", err))
 }
 
+document.getElementById("shareLinkClose").addEventListener("click", () => {
+	document.getElementById("shareLinkFallback").hidden = true
+	document.getElementById("webShareBtn").focus()
+})
 document.getElementById("webShareBtn").addEventListener("click", function () {
 	playClick()
-	if (!preparedShareBlob) { ensurePreparedShareArtifact(); return }
-	trackEvent("share_click", { method: "web_share" })
-	sharePreparedCard("File sharing is unavailable in this browser, so the card was downloaded.", "web_share")
+	sharePreparedCard("Comparison link copied and result image saved.", "web_share")
 })
 document.getElementById("instagramShareBtn").addEventListener("click", function () {
 	playClick()
-	if (!preparedShareBlob) { ensurePreparedShareArtifact(); return }
-	trackEvent("share_click", { method: "instagram" })
-	sharePreparedCard("Instagram cannot accept a direct web upload here, so the card was downloaded.", "instagram")
+	sharePreparedCard("Comparison link copied and result image saved. Attach it in Instagram.", "instagram")
 })

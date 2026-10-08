@@ -62,13 +62,16 @@
 
   <link rel="preload" href="models/mediapipe/face_landmarker.task" as="fetch">
   <link rel="preload" href="js/vendor/mediapipe/wasm/vision_wasm_internal.wasm" as="fetch">
-  <link rel="stylesheet" href="css/style.css?v=20260930-growth6">
+  <link rel="preload" href="assets/fonts/pretendard-ui.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="assets/fonts/noto-serif-kr-display.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/fonts.css?v=20261008-type1">
+  <link rel="stylesheet" href="css/style.css?v=20261009-bottom1&preview=4">
   <!-- 전부 defer로 로드한다(파싱을 막지 않기 위해). script.js는 맨 먼저 둔다 — defer 스크립트는
        "문서 순서대로 실행"되므로, script.js를 라이브러리들 뒤에 두면 그 라이브러리들의 실행이
        전부 끝날 때까지 업로드/초기화 버튼 리스너가 안 붙는 채로 남는다. script.js 안에서 외부
        라이브러리(gsap/Tone 등)를 쓰는 코드는 전부 "나중에 호출되는 함수 안"에만 있고
        최상단에서 즉시 실행되는 건 없으므로, 순서를 앞으로 당겨도 안전하다. -->
-  <script defer src="js/script.js?v=20260930-growth6"></script>
+  <script defer src="js/script.js?v=20261009-bottom1&preview=4"></script>
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script defer src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
@@ -98,12 +101,20 @@
           <p><strong id="challengeMatchName"></strong> matched at <strong id="challengeMatchScore"></strong>%. <span>Who will you match?</span></p>
         </aside>
         <input type="file" id="uploadImage" accept="image/*">
-        <button id="choosePhotoBtn" type="button">Choose a photo and start</button>
-        <div id="uploadedImageContainer" class="is-initializing">
-          <img id="uploadedImage" role="button" tabindex="0" aria-label="Choose a photo" src="assets/imgs/placeholder.svg" alt="Choose a photo to find your billionaire matches">
-          <div id="initSpinner"></div>
-          <div id="aiInfoBadge"></div>
+        <div id="photoEntry">
+          <button id="photoSlot" type="button" aria-label="Choose a photo">
+            <svg class="photo-slot-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 5h6M19 2v6"/><path d="M21 11v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h6"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21"/></svg>
+            <span>Add your photo</span>
+          </button>
+          <div id="uploadedImageContainer" hidden>
+            <img id="uploadedImage" role="button" tabindex="0" aria-label="Choose another photo" alt="Selected photo">
+            <div id="aiInfoBadge"></div>
+          </div>
         </div>
+        <button id="choosePhotoBtn" type="button">
+          <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m17 8-5-5-5 5"/><path d="M12 3v12"/></svg>
+          <span>Choose a photo and start</span>
+        </button>
         <p class="fine-print">Free · no sign-up · your photo is processed locally and is not uploaded for face matching. A clear, front-facing photo works best.</p>
         <nav class="edition-switch" aria-label="Rich Face Match editions">
           <a class="edition-switch__item" href="https://saramjh.github.io/richChecker/" data-edition-link data-placement="intro" data-target-edition="korea">Korea 47</a>
@@ -111,11 +122,11 @@
         </nav>
 
         <details class="method-note">
-          <summary>How matching works</summary>
+          <summary>How matching works<svg class="summary-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
           <p>We compare forehead height, eye spacing, nose length, mouth width, chin length, and face shape against the 100-person sample. It is a focused celebrity-lookalike edition: the comparison set is billionaires rather than a general celebrity catalog.</p>
         </details>
         <details class="culture-note">
-          <summary>Why Korean gwansang?</summary>
+          <summary>Why Korean gwansang?<svg class="summary-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></summary>
           <p>The theme is inspired by Korea’s face-reading tradition. The actual match is based on measured facial proportions, not predictions about wealth, personality, or future success.</p>
         </details>
       </div>
@@ -124,6 +135,11 @@
       <!-- 결과 표시 영역 -->
       <div id="resultsContainer">
         <div id="averageResult"></div>
+        <div id="resultPreview" class="result-preview"></div>
+        <details id="resultDetails" class="result-details">
+          <summary><span class="details-action"><span class="details-expand">Explore all six proportions</span><span class="details-collapse">Collapse detailed results</span><svg class="summary-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></span></summary>
+          <div id="resultDetailsContent"></div>
+        </details>
         <!-- 저장/공유 시 내 얼굴이 그대로 나가는 게 부담스러울 수 있다는 피드백 — 매칭 카드와
              저장용 카드 양쪽의 "나" 사진을 한 번에 블러 처리하는 토글. 결과·매칭 정보는
              그대로 유지되고 얼굴만 가려진다(JS: toggleFaceHidden). -->
@@ -138,6 +154,36 @@
             </svg>
             <span id="faceHideToggleLabel">Hide my face when sharing</span>
           </button>
+          <!-- 카카오톡/페이스북/X 공식 공유는 서버가 없으면 "방금 만든 개인 결과 이미지"를 전달할
+               방법이 없어 사이트 링크·고정 문구만 보낼 수 있었다(플랫폼 자체의 한계) — 결과 이미지가
+               빠진 공유는 의미가 없다는 피드백으로 제거하고, 실제 카드 이미지 파일을 OS 공유
+               시트로 첨부하는 공유하기/Instagram만 남긴다. -->
+          <p class="share-prompt">Send your result to a friend and compare who each of you matched.</p>
+          <div class="share-row">
+            <button id="webShareBtn" type="button">
+              <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="18" cy="5" r="3" />
+                <circle cx="6" cy="12" r="3" />
+                <circle cx="18" cy="19" r="3" />
+                <line x1="8.59" x2="15.42" y1="13.51" y2="17.49" />
+                <line x1="15.41" x2="8.59" y1="6.51" y2="10.49" />
+              </svg>
+              <span>Compare with friends</span>
+            </button>
+            <button id="instagramShareBtn" aria-label="Share to Instagram" title="Instagram">
+              <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
+                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+                <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
+              </svg>
+            </button>
+          </div>
+          <div id="shareLinkFallback" hidden>
+            <input id="shareLinkInput" type="url" readonly aria-label="Comparison link to copy">
+            <button id="shareLinkClose" type="button" title="Close" aria-label="Close"><svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 6 12 12M18 6 6 18"/></svg></button>
+          </div>
           <div id="saveImg">
             <button id="saveImgBtn">
               <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
@@ -147,31 +193,6 @@
                 <path d="m7 10 5 5 5-5" />
               </svg>
               Save match card
-            </button>
-          </div>
-          <!-- 카카오톡/페이스북/X 공식 공유는 서버가 없으면 "방금 만든 개인 결과 이미지"를 전달할
-               방법이 없어 사이트 링크·고정 문구만 보낼 수 있었다(플랫폼 자체의 한계) — 결과 이미지가
-               빠진 공유는 의미가 없다는 피드백으로 제거하고, 실제 카드 이미지 파일을 OS 공유
-               시트로 첨부하는 공유하기/Instagram만 남긴다. -->
-          <p class="share-prompt">Send your result to a friend and compare who each of you matched.</p>
-          <div class="share-row">
-            <button id="webShareBtn" aria-label="Share to another app" title="Share to another app">
-              <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="18" cy="5" r="3" />
-                <circle cx="6" cy="12" r="3" />
-                <circle cx="18" cy="19" r="3" />
-                <line x1="8.59" x2="15.42" y1="13.51" y2="17.49" />
-                <line x1="15.41" x2="8.59" y1="6.51" y2="10.49" />
-              </svg>
-            </button>
-            <button id="instagramShareBtn" aria-label="Share to Instagram" title="Instagram">
-              <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                stroke-linecap="round" stroke-linejoin="round">
-                <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
-                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
-                <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
-              </svg>
             </button>
           </div>
         </div>
@@ -185,11 +206,6 @@
         <!-- 다시 하기는 결과가 있을 때만 노출되는 보조 액션이다. -->
         <button id="reset" class="reset-link">Try another photo</button>
 
-        <div class="ad-slot">
-          <span class="ad-label">Advertisement</span>
-          <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-4410729598083068"
-            data-ad-slot="3416531598" data-ad-format="auto" data-full-width-responsive="true"></ins>
-        </div>
       </div>
       <!-- "개인정보를 절대 수집하지 않습니다"는 부정확했다 — 사진 자체는 서버로 안 가고 기기
            안에서만 분석되는 게 맞지만, 구글 애널리틱스/애드센스가 쿠키를 쓰는 건 사실이라 그
@@ -197,7 +213,12 @@
            안에 욱여넣었더니 두 번째 줄이 overflow:hidden에 잘려서 아예 안 보였다 — 카드 하단의
            일반 흐름 안에 작은 글씨 각주로 옮긴다. -->
       <p class="fine-print">For entertainment only. Facial features do not predict wealth, personality, or future success. Comparisons use AI-generated caricatures, not photographs of the people named.</p>
-      <p id="privacyNote">Your face-match photo is processed locally and is not uploaded or stored by this site. Saving or sharing a result card is your choice.</p>
+      <p id="privacyNote"><span>Your face-match photo is processed locally and is not uploaded or stored by this site.</span><span>Saving or sharing a result card is your choice.</span></p>
+      <div id="bottomAd" class="ad-slot" role="region" aria-label="Advertisement">
+        <span class="ad-label">Advertisement</span>
+        <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-4410729598083068"
+          data-ad-slot="3416531598" data-ad-format="auto" data-full-width-responsive="true"></ins>
+      </div>
     </div>
   </div>
 
@@ -256,7 +277,11 @@
     <div id="portalFlash"></div>
     <div class="modal-content">
       <h2 id="processTitle">Finding your match</h2>
-      <p id="loadingStatus">Comparing facial proportions…</p>
+      <div id="analysisPhotoStage" class="analysis-photo-stage" hidden>
+        <canvas id="analysisPhoto" role="img" aria-label="Selected photo being analyzed"></canvas>
+        <div id="analysisGeometry" aria-hidden="true"></div>
+      </div>
+      <p id="loadingStatus">Preparing your photo…</p>
       <div class="progress-bar">
         <div id="progressBarInner" class="progress-bar-inner"></div>
       </div>
