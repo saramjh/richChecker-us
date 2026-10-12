@@ -13,6 +13,7 @@ function forbid(haystack, needle, message) { if (haystack.includes(needle)) thro
 need(index, '<link rel="canonical" href="https://saramjh.github.io/richChecker-us/">', "canonical must stay on the clean product URL")
 need(index, 'id="challengeEntry"', "shared-result challenge entry missing")
 need(index, 'focused celebrity-lookalike edition', "adjacent intent copy missing")
+need(index, 'Matches compare facial proportions; they do not predict wealth or success.', "visible limitations statement missing")
 need(script, 'function buildChallengeUrl()', "challenge URL builder missing")
 need(script, 'canonical.searchParams.set("via", "share")', "share attribution parameter missing")
 need(script, 'canonical.searchParams.set("match", lastResultSummary.topMatchId)', "public match id missing from challenge URL")
@@ -27,7 +28,7 @@ need(script, 'trackEvent("shared_visit_complete"', "shared visit completion even
 need(script, 'trackEvent("share_link_created"', "share link event missing")
 need(script, 'url: challengeUrl', "native share must carry the challenge URL")
 need(script, 'topMatchId: topMatch.id', "result summary must retain a stable public id")
-need(sitemap, '<lastmod>2026-09-30</lastmod>', "sitemap freshness marker is stale")
+need(sitemap, '<lastmod>2026-10-12</lastmod>', "sitemap freshness marker is stale")
 
 const builderStart = script.indexOf("function buildChallengeUrl()")
 const builderEnd = script.indexOf("function trackShareLinkCreated", builderStart)
