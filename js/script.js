@@ -1772,8 +1772,10 @@ function sharePreparedCard(fallbackMessage, method) {
 		trackEvent("share_busy", params)
 		return
 	}
-	const payload = { title: SHARE_TITLE, text: buildShareText(), url: challengeUrl }
-	if (blob) {
+	const comparisonOnly = method === "web_share"
+	const payload = { title: SHARE_TITLE, text: `${buildShareText()}\n${challengeUrl}`, url: challengeUrl }
+	// File targets may discard text and URLs. Friend comparisons must remain link shares.
+	if (blob && !comparisonOnly) {
 		const file = new File([blob], SHARE_FILE_NAME, { type: "image/png" })
 		try {
 			if (navigator.canShare?.({ files: [file] })) payload.files = [file]
@@ -1815,7 +1817,7 @@ function sharePreparedCard(fallbackMessage, method) {
 			if (copied) {
 				let downloaded = false
 				if (generation === shareResultGeneration) {
-					if (blob && version === shareArtifactVersion) downloaded = downloadPreparedShareBlob(fallbackMessage)
+					if (!comparisonOnly && blob && version === shareArtifactVersion) downloaded = downloadPreparedShareBlob(fallbackMessage)
 					else showToast("Comparison link copied. Send it to a friend.")
 				}
 				finish("success", downloaded ? "clipboard_download" : "clipboard", null, downloaded ? "image_link" : "link")
