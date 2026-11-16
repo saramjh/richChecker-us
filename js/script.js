@@ -275,10 +275,12 @@ document.getElementById("uploadedImage").addEventListener("keydown", (event) => 
 
 // 이미지가 실제 픽셀 크기까지 준비되기 전에 MediaPipe를 시작하면 느린 모바일에서
 // naturalWidth/Height가 0인 캔버스가 만들어질 수 있다. src 설정 후 decode/load 완료를 보장한다.
-function setImageSourceAndWait(img, src) {
+function setImageSourceAndWait(img, src, timeoutMs = 20000) {
 	return new Promise((resolve, reject) => {
 		let settled = false
+		let timeoutId
 		const cleanup = () => {
+			clearTimeout(timeoutId)
 			img.removeEventListener("load", onLoad)
 			img.removeEventListener("error", onError)
 		}
@@ -297,6 +299,11 @@ function setImageSourceAndWait(img, src) {
 		// 반드시 새 src를 넣기 전에 그 새 리소스의 load/error를 기다린다.
 		img.addEventListener("load", onLoad)
 		img.addEventListener("error", onError)
+		timeoutId = setTimeout(() => {
+			const error = new Error("Image decode timed out")
+			error.code = "IMAGE_TIMEOUT"
+			finish(error)
+		}, timeoutMs)
 		img.src = src
 	})
 }
@@ -311,68 +318,260 @@ function waitForUiPaint() {
 		else setTimeout(resolve, 16)
 	})
 }
+// The browser-supplied MIME type can be empty or based on the extension, not the
+// actual bytes. These are bounded diagnostics, never a substitute for decoding.
+const UPLOAD_MIME_GROUPS = Object.freeze({
+	"image/jpeg": "jpeg", "image/png": "png", "image/webp": "webp",
+	"image/avif": "avif", "image/heic": "heic", "image/heif": "heic",
+	"image/gif": "gif", "image/bmp": "bmp", "image/x-ms-bmp": "bmp",
+	"image/tiff": "tiff",
+})
+const UPLOAD_EXTENSION_GROUPS = Object.freeze({
+	jpg: "jpeg", jpeg: "jpeg", png: "png", webp: "webp",
+	avif: "avif", heic: "heic", heif: "heic", gif: "gif",
+	bmp: "bmp", tif: "tiff", tiff: "tiff",
+})
+const MAX_UPLOAD_BYTES = 50 * 1024 * 1024
+const MAX_IMAGE_PIXELS = 50_000_000
+
+function uploadFormatGroup(file) {
+	const mime = (file.type || "").toLowerCase()
+	const name = file.name || ""
+	const extension = name.includes(".") ? name.split(".").pop().toLowerCase() : ""
+	if (mime === "image/svg+xml" || extension === "svg") return "svg"
+	if (UPLOAD_MIME_GROUPS[mime]) return UPLOAD_MIME_GROUPS[mime]
+	if (!mime || mime === "application/octet-stream") return UPLOAD_EXTENSION_GROUPS[extension] || "unknown"
+	return mime.startsWith("image/") ? "other_image" : "non_image"
+}
+
+function uploadSizeBand(bytes) {
+	if (!bytes) return "empty"
+	if (bytes < 1024 * 1024) return "under_1mib"
+	if (bytes < 5 * 1024 * 1024) return "1_5mib"
+	if (bytes < 15 * 1024 * 1024) return "5_15mib"
+	if (bytes <= MAX_UPLOAD_BYTES) return "15_50mib"
+	return "over_50mib"
+}
+
+// Some Android cloud providers label HEIC/TIFF bytes as JPEG. On a failed
+// decode only, inspect 16 local header bytes to give an accurate recovery
+// instruction. Never read the full photo or send bytes to analytics.
+async function failedDecodeFormatHint(file, declaredFormat) {
+	if (declaredFormat === "heic" || declaredFormat === "tiff") return declaredFormat
+	let timer
+	try {
+		const header = await Promise.race([
+			file.slice(0, 16).arrayBuffer().then((buffer) => new Uint8Array(buffer)),
+			new Promise((resolve) => { timer = setTimeout(() => resolve(null), 250) }),
+		])
+		if (!header) return declaredFormat
+		const tag = (start) => String.fromCharCode(...header.slice(start, start + 4))
+		if (header.length >= 12 && tag(4) === "ftyp" &&
+			["heic", "heix", "hevc", "hevx", "heis", "heim"].includes(tag(8))) return "heic"
+		if (header.length >= 4 &&
+			((tag(0) === "II*\0") || (tag(0) === "MM\0*"))) return "tiff"
+	} catch {
+		// A failed cloud-provider byte read must not delay or block the retry UI.
+	} finally {
+		clearTimeout(timer)
+	}
+	return declaredFormat
+}
+
+// Android's Image element and native ImageBitmap can take different decode
+// paths for a provider-backed File. Only after the existing <img> path fails,
+// attempt one bounded local decode and normalize the pixels to an ordinary
+// JPEG Blob. No Base64 copies, remote upload, third-party codec or extra work
+// on the normal success path.
+const MAX_NATIVE_RECOVERY_BYTES = 20 * 1024 * 1024
+const MAX_NATIVE_RECOVERY_SIDE = 2200
+async function recoverPhotoBlobWithNativeBitmap(file, timeoutMs = 7000) {
+	if (file.size > MAX_NATIVE_RECOVERY_BYTES || typeof createImageBitmap !== "function") return null
+	let accepted = true
+	let bitmap
+	let canvas
+	let timer
+	let encodeTimer
+	try {
+		const pending = Promise.resolve()
+			.then(() => createImageBitmap(file, { imageOrientation: "from-image" }))
+			.then((result) => {
+				if (!accepted) {
+					result.close()
+					return null
+				}
+				return result
+			})
+		bitmap = await Promise.race([
+			pending,
+			new Promise((resolve) => {
+				timer = setTimeout(() => {
+					accepted = false
+					resolve(null)
+				}, timeoutMs)
+			}),
+		])
+		if (!bitmap || !bitmap.width || !bitmap.height ||
+			bitmap.width * bitmap.height > MAX_IMAGE_PIXELS) return null
+
+		const scale = Math.min(1, MAX_NATIVE_RECOVERY_SIDE / Math.max(bitmap.width, bitmap.height))
+		canvas = document.createElement("canvas")
+		canvas.width = Math.max(1, Math.round(bitmap.width * scale))
+		canvas.height = Math.max(1, Math.round(bitmap.height * scale))
+		const ctx = canvas.getContext("2d")
+		if (!ctx) return null
+		ctx.fillStyle = "#fff"
+		ctx.fillRect(0, 0, canvas.width, canvas.height)
+		ctx.drawImage(bitmap, 0, 0, canvas.width, canvas.height)
+		// Release the decoded native bitmap before the async JPEG encode.
+		bitmap.close()
+		bitmap = null
+		const blob = await Promise.race([
+			new Promise((resolve) => canvas.toBlob(resolve, "image/jpeg", 0.92)),
+			new Promise((resolve) => { encodeTimer = setTimeout(() => resolve(null), 5000) }),
+		])
+		return blob && blob.size > 0 && blob.size <= MAX_NATIVE_RECOVERY_BYTES ? blob : null
+	} catch {
+		// The original upload_error path owns the retry message and cleanup.
+		return null
+	} finally {
+		accepted = false
+		clearTimeout(timer)
+		clearTimeout(encodeTimer)
+		if (bitmap) bitmap.close()
+		if (canvas) {
+			canvas.width = 0
+			canvas.height = 0
+		}
+	}
+}
+
+// Keep the selected photo as a browser-local Blob URL instead of copying the
+// full original into a Base64 string. Retain it for result/share rendering,
+// and revoke it only when the photo is replaced or explicitly reset.
+let selectedPhotoUrl = null
+function releaseSelectedPhotoUrl() {
+	if (!selectedPhotoUrl) return
+	URL.revokeObjectURL(selectedPhotoUrl)
+	selectedPhotoUrl = null
+}
+
 document.getElementById("uploadImage").addEventListener("change", function () {
 	const file = this.files[0]
 	if (!file) return
 	this.value = ""
 
 	const source = lastPhotoPickerSource
-	const fileSizeKb = Math.round(file.size / 1024)
+	const uploadContext = {
+		source,
+		upload_format: uploadFormatGroup(file),
+		upload_size_band: uploadSizeBand(file.size),
+	}
 	const loadingSessionId = showLoadingModal()
-	trackEvent("upload_started", { source, file_size_kb: fileSizeKb })
+	trackEvent("upload_started", { ...uploadContext, stage: "selected" })
 	trackSharedVisitUpload()
-	const readerStartedAt = performance.now()
-	const reader = new FileReader()
 
-	reader.onerror = async function () {
-		trackEvent("upload_error", { error_type: "file_read", source, file_size_kb: fileSizeKb })
-		await hideLoadingModal(loadingSessionId)
-		showToast("We couldn't read that photo. Please try another image.")
-	}
+	uploadTaskChain = uploadTaskChain.catch(() => {}).then(async () => {
+		await waitForUiPaint()
+		let rejection
+		if (file.size === 0) rejection = ["empty_file", "The selected photo is empty. Choose another image."]
+		else if (file.size > MAX_UPLOAD_BYTES) rejection = ["file_too_large", "That photo exceeds 50 MiB. Select a smaller image."]
+		else if (uploadContext.upload_format === "svg" || uploadContext.upload_format === "non_image") {
+			rejection = ["unsupported_type", "Choose a JPG, PNG, or WebP photo."]
+		}
+		if (rejection) {
+			trackEvent("upload_error", { ...uploadContext, error_type: rejection[0], stage: "preflight" })
+			await hideLoadingModal(loadingSessionId)
+			showToast(rejection[1])
+			return
+		}
+		const uploadedImage = document.getElementById("uploadedImage")
+		const uploadContainer = document.getElementById("uploadedImageContainer")
+		uploadContainer.hidden = true
+		document.getElementById("photoSlot").hidden = false
+		clearResults()
 
-	reader.onload = function (e) {
-		const readerReadyAt = performance.now()
-		const fileReadMs = Math.round(readerReadyAt - readerStartedAt)
-		const dataUrl = e.target.result
-		uploadTaskChain = uploadTaskChain.catch(() => {}).then(async () => {
-			await waitForUiPaint()
-			const uploadedImage = document.getElementById("uploadedImage")
-			const uploadContainer = document.getElementById("uploadedImageContainer")
-			uploadContainer.hidden = true
-			document.getElementById("photoSlot").hidden = false
-			clearResults()
+		let photoUrl
+		try {
+			photoUrl = URL.createObjectURL(file)
+		} catch (err) {
+			console.error(err)
+			releaseSelectedPhotoUrl()
+			trackEvent("upload_error", { ...uploadContext, error_type: "object_url", stage: "object_url" })
+			await hideLoadingModal(loadingSessionId)
+			showToast("Could not access that photo. Try an image saved on your device.")
+			return
+		}
 
-			const imageReadyStartedAt = performance.now()
+		const imageReadyStartedAt = performance.now()
+		let decodeRecovered = false
+		try {
 			try {
-				await setImageSourceAndWait(uploadedImage, dataUrl)
-				uploadContainer.classList.add("has-photo")
-				uploadContainer.hidden = false
-				document.getElementById("photoSlot").hidden = true
-			} catch (err) {
-				console.error(err)
-				trackEvent("upload_error", {
-					error_type: "image_decode",
-					source,
-					file_size_kb: fileSizeKb,
-					file_read_ms: fileReadMs,
-				})
-				await hideLoadingModal(loadingSessionId)
-				showToast("We couldn't display that photo. Please try a JPG, PNG, or WebP image.")
-				return
-			}
+				await setImageSourceAndWait(uploadedImage, photoUrl)
+			} catch (initialError) {
+				uploadedImage.removeAttribute("src")
+				const nativeBlob = await recoverPhotoBlobWithNativeBitmap(file)
+				if (!nativeBlob) throw initialError
 
-			const imageReadyMs = Math.round(performance.now() - imageReadyStartedAt)
-			const imageMegapixels = Math.round((uploadedImage.naturalWidth * uploadedImage.naturalHeight) / 10000) / 100
-			await processImage({
-				source,
-				file_size_kb: fileSizeKb,
-				file_read_ms: fileReadMs,
-				image_ready_ms: imageReadyMs,
-				image_megapixels: imageMegapixels,
-			}, loadingSessionId)
-		})
-	}
-	reader.readAsDataURL(file)
+				const recoveredUrl = URL.createObjectURL(nativeBlob)
+				try {
+					await setImageSourceAndWait(uploadedImage, recoveredUrl, 8000)
+				} catch {
+					URL.revokeObjectURL(recoveredUrl)
+					throw initialError
+				}
+				URL.revokeObjectURL(photoUrl)
+				photoUrl = recoveredUrl
+				decodeRecovered = true
+			}
+			if (uploadedImage.naturalWidth * uploadedImage.naturalHeight > MAX_IMAGE_PIXELS) {
+				const error = new Error("Image pixel budget exceeded")
+				error.code = "IMAGE_TOO_LARGE"
+				throw error
+			}
+		} catch (err) {
+			console.error(err)
+			URL.revokeObjectURL(photoUrl)
+			releaseSelectedPhotoUrl()
+			uploadedImage.removeAttribute("src")
+			uploadContainer.classList.remove("has-photo")
+			const errorType = err?.code === "IMAGE_TIMEOUT" ? "image_timeout"
+				: err?.code === "IMAGE_TOO_LARGE" ? "too_many_pixels" : "image_decode"
+			trackEvent("upload_error", { ...uploadContext, error_type: errorType, stage: "decode" })
+			await hideLoadingModal(loadingSessionId)
+			const formatHint = errorType === "image_decode"
+				? await failedDecodeFormatHint(file, uploadContext.upload_format) : uploadContext.upload_format
+			const message = errorType === "image_timeout"
+				? "The photo took too long to load. Try a JPG saved on your device."
+				: errorType === "too_many_pixels"
+					? "The photo resolution is too high. Resize or crop it and try again."
+					: formatHint === "heic"
+						? "This browser could not open the HEIC photo. Save it as JPG and try again."
+						: formatHint === "tiff"
+							? "This browser could not open the TIFF photo. Save it as JPG or PNG and try again."
+							: "Could not display that photo. Try a JPG, PNG, or WebP image."
+			showToast(message)
+			return
+		}
+
+		// The previous image is no longer referenced after clearResults().
+		releaseSelectedPhotoUrl()
+		selectedPhotoUrl = photoUrl
+		uploadContainer.classList.add("has-photo")
+		uploadContainer.hidden = false
+		document.getElementById("photoSlot").hidden = true
+
+		const imageReadyMs = Math.round(performance.now() - imageReadyStartedAt)
+		const imageMegapixels = Math.round((uploadedImage.naturalWidth * uploadedImage.naturalHeight) / 10000) / 100
+		if (decodeRecovered) {
+			trackEvent("upload_decode_recovered", { ...uploadContext, stage: "decode_fallback", recovery_method: "image_bitmap" })
+		}
+		await processImage({
+			...uploadContext,
+			image_ready_ms: imageReadyMs,
+			image_megapixels: imageMegapixels,
+		}, loadingSessionId)
+	})
 })
 
 // data/embeddings.json: tools/precompute.html(MediaPipe 기반)로 미리 계산해둔
@@ -552,10 +751,17 @@ async function processImage(context = {}, loadingSessionId = null) {
 
 	// 업로드 직후 준비된 픽셀을 첫 await 전에 고정한다. 모델/WASM 초기화 중 DOM의
 	// <img> src가 바뀌더라도 이번 분석은 사용자가 선택한 바로 그 사진을 계속 사용해야 한다.
-	const detectionCanvas = toDetectionCanvas(document.getElementById("uploadedImage"))
-
 	const activeLoadingSessionId = loadingSessionId || showLoadingModal()
-	displayLoadingFace(detectionCanvas, activeLoadingSessionId)
+	let detectionCanvas
+	try {
+		detectionCanvas = toDetectionCanvas(document.getElementById("uploadedImage"))
+		displayLoadingFace(detectionCanvas, activeLoadingSessionId)
+	} catch (err) {
+		stage = "canvas_snapshot"
+		fail("canvas_snapshot", "Could not prepare the photo for analysis. Try a smaller or cropped image.", err)
+		await hideLoadingModal(activeLoadingSessionId)
+		return
+	}
 	trackEvent("analysis_started", eventParams())
 
 	try {
@@ -1509,6 +1715,7 @@ function commitIntroState() {
 	document.body.classList.remove("result-mode")
 	uploadContainer.hidden = true
 	uploadedImage.removeAttribute("src")
+	releaseSelectedPhotoUrl()
 	document.getElementById("photoSlot").hidden = false
 	uploadContainer.classList.remove("has-photo")
 	document.getElementById("uploadImage").value = ""

@@ -7,8 +7,9 @@ function requireText(text, label) {
   if (!script.includes(text)) throw new Error("Missing runtime contract: " + label)
 }
 
-requireText("function setImageSourceAndWait(img, src)", "source-specific image readiness gate")
-requireText("await setImageSourceAndWait(uploadedImage, dataUrl)", "new image load before analysis")
+requireText("function setImageSourceAndWait(img, src, timeoutMs = 20000)", "source-specific image readiness gate")
+requireText("await setImageSourceAndWait(uploadedImage, photoUrl)", "new image load before analysis")
+requireText("async function recoverPhotoBlobWithNativeBitmap(file, timeoutMs = 7000)", "bounded native recovery for Android providers")
 requireText("let mediapipeModulesPromise = null", "module promise dedupe")
 requireText("let faceLandmarkerPromise = null", "landmarker promise dedupe")
 requireText("let coreWarmupPromise = null", "eager core warmup dedupe")
@@ -66,7 +67,7 @@ requireText('timings.matching_ms', "matching timing")
 requireText('timings.render_ms', "render timing")
 requireText('id="topMatchPercent">${match.similarityDisplay}%', "static similarity value")
 
-if (!index.includes('js/script.js?v=20261009-bottom1')) throw new Error("Missing versioned runtime script URL")
+if (!index.includes('js/script.js?v=20261116-us-android-recovery')) throw new Error("Missing versioned runtime script URL")
 
 if (!index.includes('id="uploadedImageContainer" hidden') || !index.includes('id="choosePhotoBtn" type="button"')) {
   throw new Error("Initial photo entry must keep the native CTA and hide the undecoded photo")
@@ -83,8 +84,8 @@ if (script.includes("window.onload = function ()")) {
   throw new Error("Do not mutate upload state from window.onload; it races the first user selection")
 }
 const resetImageClears = script.match(/uploadedImage\.removeAttribute\("src"\)/g) || []
-if (resetImageClears.length !== 1) {
-  throw new Error("Only explicit reset should clear the selected image")
+if (resetImageClears.length !== 3) {
+  throw new Error("Decode recovery, final decode failure and explicit reset should clear the image")
 }
 requireText("uploadContainer.hidden = true", "photo frame hidden on reset and before decode")
 requireText("uploadContainer.hidden = false", "decoded photo frame restored")
@@ -93,7 +94,7 @@ const processStart = script.indexOf("async function processImage(")
 const processEnd = script.indexOf("\n// Lucide", processStart)
 if (processStart < 0 || processEnd < 0) throw new Error("Could not isolate processImage")
 const processBlock = script.slice(processStart, processEnd)
-const snapshotPos = processBlock.indexOf('const detectionCanvas = toDetectionCanvas(document.getElementById("uploadedImage"))')
+const snapshotPos = processBlock.indexOf('detectionCanvas = toDetectionCanvas(document.getElementById("uploadedImage"))')
 const moduleWaitPos = processBlock.indexOf('modules = await timed("modules_ready"')
 const modelWaitPos = processBlock.indexOf('landmarker = await timed("model_ready"')
 if (snapshotPos < 0 || moduleWaitPos < 0 || modelWaitPos < 0 || snapshotPos >= moduleWaitPos || snapshotPos >= modelWaitPos) {
@@ -112,13 +113,13 @@ if (uploadStart < 0 || uploadEnd < 0) throw new Error("Could not isolate upload 
 const uploadBlock = script.slice(uploadStart, uploadEnd)
 const clearInputPos = uploadBlock.indexOf('this.value = ""')
 const loaderPos = uploadBlock.indexOf("const loadingSessionId = showLoadingModal()")
-const readerPos = uploadBlock.indexOf("const reader = new FileReader()")
-const readyPos = uploadBlock.indexOf("await setImageSourceAndWait(uploadedImage, dataUrl)")
+const readerPos = uploadBlock.indexOf("URL.createObjectURL(file)")
+const readyPos = uploadBlock.indexOf("await setImageSourceAndWait(uploadedImage, photoUrl)")
 const analysisPos = uploadBlock.indexOf("await processImage(")
 if (!(clearInputPos >= 0 && loaderPos > clearInputPos && readerPos > loaderPos && readyPos > readerPos && analysisPos > readyPos)) {
-  throw new Error("Upload flow must show processing immediately, then read/decode the selected image before analysis")
+  throw new Error("Upload flow must show processing immediately, then acquire a local Blob URL and decode the selected image before analysis")
 }
-const sourceGateStart = script.indexOf("function setImageSourceAndWait(img, src)")
+const sourceGateStart = script.indexOf("function setImageSourceAndWait(img, src, timeoutMs = 20000)")
 const sourceGateEnd = script.indexOf("\n\n// 이미지 업로드 시 처리", sourceGateStart)
 const sourceGateBlock = script.slice(sourceGateStart, sourceGateEnd)
 const listenerPos = sourceGateBlock.indexOf('img.addEventListener("load", onLoad)')
