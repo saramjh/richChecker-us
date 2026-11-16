@@ -378,6 +378,57 @@ async function failedDecodeFormatHint(file, declaredFormat) {
 	return declaredFormat
 }
 
+// Only the actual HEIC/HEIF photo decode failure loads this local MIT decoder.
+// The bundled JavaScript and its worker stay in the user's browser; image
+// bytes never leave the device. Normal JPG/PNG/WebP uploads pay no extra cost.
+let heicConverterPromise = null
+function loadHeicConverter() {
+	if (typeof window.heic2any === "function") return Promise.resolve(window.heic2any)
+	if (!heicConverterPromise) {
+		heicConverterPromise = new Promise((resolve, reject) => {
+			const script = document.createElement("script")
+			script.src = "assets/vendor/heic2any.min.js"
+			script.async = true
+			let timer
+			const settle = (error) => {
+				clearTimeout(timer)
+				if (error) {
+					script.remove()
+					reject(error)
+				} else resolve(window.heic2any)
+			}
+			script.onload = () => settle(typeof window.heic2any === "function" ? null : new Error("HEIC decoder unavailable"))
+			script.onerror = () => settle(new Error("HEIC decoder failed to load"))
+			timer = setTimeout(() => settle(new Error("HEIC decoder load timed out")), 9000)
+			document.head.append(script)
+		}).catch((error) => { heicConverterPromise = null; throw error })
+	}
+	return heicConverterPromise
+}
+
+const MAX_HEIC_INPUT_BYTES = 12 * 1024 * 1024
+async function recoverHeicPhotoBlob(file, timeoutMs = 10000) {
+	if (!file.size || file.size > MAX_HEIC_INPUT_BYTES) return null
+	let timer
+	try {
+		const convert = await loadHeicConverter()
+		// Some Android photo providers report a JPEG MIME for genuine HEIC bytes.
+		// Normalize only the MIME hint here: the decoder validates actual bytes.
+		const localSource = new Blob([file], { type: "image/heic" })
+		const converted = await Promise.race([
+			convert({ blob: localSource, toType: "image/jpeg", quality: 0.88 }),
+			new Promise((resolve) => { timer = setTimeout(() => resolve(null), timeoutMs) }),
+		])
+		const jpeg = Array.isArray(converted) ? converted[0] : converted
+		return jpeg instanceof Blob && jpeg.type === "image/jpeg" &&
+			jpeg.size > 0 && jpeg.size <= MAX_NATIVE_RECOVERY_BYTES ? jpeg : null
+	} catch {
+		return null
+	} finally {
+		clearTimeout(timer)
+	}
+}
+
 // Android's Image element and native ImageBitmap can take different decode
 // paths for a provider-backed File. Only after the existing <img> path fails,
 // attempt one bounded local decode and normalize the pixels to an ordinary
@@ -505,13 +556,19 @@ document.getElementById("uploadImage").addEventListener("change", function () {
 
 		const imageReadyStartedAt = performance.now()
 		let decodeRecovered = false
+		let recoveryMethod = "image_bitmap"
+		let detectedFormat = uploadContext.upload_format
 		try {
 			try {
 				await setImageSourceAndWait(uploadedImage, photoUrl)
 			} catch (initialError) {
 				uploadedImage.removeAttribute("src")
-				const nativeBlob = await recoverPhotoBlobWithNativeBitmap(file)
+				detectedFormat = await failedDecodeFormatHint(file, uploadContext.upload_format)
+				const nativeBlob = detectedFormat === "heic"
+					? await recoverHeicPhotoBlob(file)
+					: await recoverPhotoBlobWithNativeBitmap(file)
 				if (!nativeBlob) throw initialError
+				if (detectedFormat === "heic") recoveryMethod = "heic_decoder"
 
 				const recoveredUrl = URL.createObjectURL(nativeBlob)
 				try {
@@ -540,7 +597,7 @@ document.getElementById("uploadImage").addEventListener("change", function () {
 			trackEvent("upload_error", { ...uploadContext, error_type: errorType, stage: "decode" })
 			await hideLoadingModal(loadingSessionId)
 			const formatHint = errorType === "image_decode"
-				? await failedDecodeFormatHint(file, uploadContext.upload_format) : uploadContext.upload_format
+				? detectedFormat : uploadContext.upload_format
 			const message = errorType === "image_timeout"
 				? "The photo took too long to load. Try a JPG saved on your device."
 				: errorType === "too_many_pixels"
@@ -564,7 +621,7 @@ document.getElementById("uploadImage").addEventListener("change", function () {
 		const imageReadyMs = Math.round(performance.now() - imageReadyStartedAt)
 		const imageMegapixels = Math.round((uploadedImage.naturalWidth * uploadedImage.naturalHeight) / 10000) / 100
 		if (decodeRecovered) {
-			trackEvent("upload_decode_recovered", { ...uploadContext, stage: "decode_fallback", recovery_method: "image_bitmap" })
+			trackEvent("upload_decode_recovered", { ...uploadContext, stage: "decode_fallback", recovery_method: recoveryMethod })
 		}
 		await processImage({
 			...uploadContext,
