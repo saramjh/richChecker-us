@@ -2,13 +2,33 @@ import fs from "node:fs"
 
 const script = fs.readFileSync(new URL("../js/script.js", import.meta.url), "utf8")
 const index = fs.readFileSync(new URL("../index.html", import.meta.url), "utf8")
+const tiffWorker = fs.readFileSync(new URL("../assets/vendor/tiff-worker.js", import.meta.url), "utf8")
+const utif = fs.readFileSync(new URL("../assets/vendor/utif.js", import.meta.url), "utf8")
 
 function requireText(text, label) {
   if (!script.includes(text)) throw new Error("Missing runtime contract: " + label)
 }
+function requireWorkerText(text, label) {
+  if (!tiffWorker.includes(text)) throw new Error("Missing TIFF worker contract: " + label)
+}
+requireWorkerText('importScripts("pako_inflate.min.js?v=20261116-tiff-bounds", "utif.js?v=20261116-tiff-bounds")', "self-hosted decoder dependencies")
+requireWorkerText("const MAX_TIFF_PIXELS = 8_000_000", "pre-decompression pixel budget")
+requireWorkerText("const MAX_TIFF_DECODE_BYTES = 32 * 1024 * 1024", "decoded-byte budget")
+requireWorkerText("const MAX_TIFF_IFD_ENTRIES = 256", "bounded TIFF metadata entry count")
+requireWorkerText("function preflightFirstIfd(buffer)", "bounded first-page metadata parsing")
+requireWorkerText("self.pako.inflate = boundedInflate", "bounded Deflate expansion")
+if (!utif.includes('maxOutputLength:maxOutputLength')) throw new Error("Missing TIFF Deflate per-strip output cap")
+requireWorkerText("data.byteLength > 12 * 1024 * 1024", "bounded source bytes")
+requireWorkerText('self.postMessage({ ok: true, width, height, pixels: rgba.buffer }, [rgba.buffer])', "transfer decoded pixels without copying")
+if (/\b(fetch|XMLHttpRequest|WebSocket)\b/.test(tiffWorker)) throw new Error("TIFF worker must not make network requests")
+for (const license of ["utif.LICENSE.txt", "pako.LICENSE.txt"]) {
+  const text = fs.readFileSync(new URL("../assets/vendor/" + license, import.meta.url), "utf8")
+  if (!text.includes("MIT License") && !text.includes("The MIT License")) throw new Error("Missing MIT license notice: " + license)
+}
 
-requireText("function setImageSourceAndWait(img, src, timeoutMs = 20000)", "source-specific image readiness gate")
-requireText("await setImageSourceAndWait(uploadedImage, photoUrl)", "new image load before analysis")
+requireText("function setImageSourceAndWait(img, src, timeoutMs = 20000, uploadId = uploadRevision)", "source-specific image readiness gate")
+requireText("await awaitActiveUpload(setImageSourceAndWait(uploadedImage, photoUrl, 20000, thisUpload), thisUpload)", "cancelable new image load before analysis")
+requireText("async function recoverTiffPhotoBlob(file, timeoutMs = 9000, signal = null)", "worker-limited TIFF decode")
 requireText("async function recoverHeicPhotoBlob(file, timeoutMs = 10000)", "local HEIC decode for unsupported photos")
 requireText("async function recoverPhotoBlobWithNativeBitmap(file, timeoutMs = 7000)", "bounded native recovery for Android providers")
 requireText("let mediapipeModulesPromise = null", "module promise dedupe")
@@ -33,7 +53,7 @@ requireText("revealResultFaceMotion()", "nonblocking result-photo continuation")
 requireText('modal.style.opacity = "1"', "immediate full-screen response")
 requireText('content.style.opacity = "1"', "immediate progress-card response")
 requireText("const loadingSessionId = showLoadingModal()", "loader begins before file read")
-requireText("async function hideLoadingModal(runId = loadingRunId)", "loader session ownership")
+requireText("async function hideLoadingModal(runId = loadingRunId, immediate = false)", "loader session ownership")
 requireText('document.body.classList.add("result-mode")', "long result top alignment")
 requireText('window.scrollTo({ top: 0, left: 0, behavior: "auto" })', "state transition scroll reset")
 requireText("function revealRenderedResults()", "post-loader result reveal")
@@ -53,6 +73,10 @@ requireText("function classifyEntryReferrer()", "internal acquisition referrer c
 requireText('timings.detection_ms', "detection timing")
 requireText("async function detectFaceWithRetry(landmarker, initialCanvas)", "bounded detection retry")
 requireText("timings.detection_attempts", "detection retry telemetry")
+requireText("function awaitActiveUpload(promise, uploadId, timeoutMs = 0, cancelWork = null)", "cancelable upload and model waits")
+requireText("activeLoadingSessionId === loadingRunId && uploadId === uploadRevision", "stale analysis cannot clear new upload styles")
+requireText("recoverTiffPhotoBlob(file, 9000, recoveryController?.signal)", "abortable TIFF worker conversion")
+requireText('new Worker("assets/vendor/tiff-worker.js?v=20261116-tiff-bounds")', "cache-busted hardened TIFF worker")
 requireText("let uploadTaskChain = Promise.resolve()", "serialized upload analysis")
 requireText("function waitForUiPaint()", "UI paint yield before analysis")
 requireText("await waitForUiPaint()", "processing state paints before heavy work")
@@ -68,7 +92,7 @@ requireText('timings.matching_ms', "matching timing")
 requireText('timings.render_ms', "render timing")
 requireText('id="topMatchPercent">${match.similarityDisplay}%', "static similarity value")
 
-if (!index.includes('js/script.js?v=20261116-us-heic-recovery')) throw new Error("Missing versioned runtime script URL")
+if (!index.includes('js/script.js?v=20261116-us-upload-safe3')) throw new Error("Missing versioned runtime script URL")
 
 if (!index.includes('id="uploadedImageContainer" hidden') || !index.includes('id="choosePhotoBtn" type="button"')) {
   throw new Error("Initial photo entry must keep the native CTA and hide the undecoded photo")
@@ -85,7 +109,7 @@ if (script.includes("window.onload = function ()")) {
   throw new Error("Do not mutate upload state from window.onload; it races the first user selection")
 }
 const resetImageClears = script.match(/uploadedImage\.removeAttribute\("src"\)/g) || []
-if (resetImageClears.length !== 3) {
+if (resetImageClears.length !== 6) {
   throw new Error("Decode recovery, final decode failure and explicit reset should clear the image")
 }
 requireText("uploadContainer.hidden = true", "photo frame hidden on reset and before decode")
@@ -115,12 +139,12 @@ const uploadBlock = script.slice(uploadStart, uploadEnd)
 const clearInputPos = uploadBlock.indexOf('this.value = ""')
 const loaderPos = uploadBlock.indexOf("const loadingSessionId = showLoadingModal()")
 const readerPos = uploadBlock.indexOf("URL.createObjectURL(file)")
-const readyPos = uploadBlock.indexOf("await setImageSourceAndWait(uploadedImage, photoUrl)")
+const readyPos = uploadBlock.indexOf("await awaitActiveUpload(setImageSourceAndWait(uploadedImage, photoUrl, 20000, thisUpload), thisUpload)")
 const analysisPos = uploadBlock.indexOf("await processImage(")
 if (!(clearInputPos >= 0 && loaderPos > clearInputPos && readerPos > loaderPos && readyPos > readerPos && analysisPos > readyPos)) {
   throw new Error("Upload flow must show processing immediately, then acquire a local Blob URL and decode the selected image before analysis")
 }
-const sourceGateStart = script.indexOf("function setImageSourceAndWait(img, src, timeoutMs = 20000)")
+const sourceGateStart = script.indexOf("function setImageSourceAndWait(img, src, timeoutMs = 20000, uploadId = uploadRevision)")
 const sourceGateEnd = script.indexOf("\n\n// 이미지 업로드 시 처리", sourceGateStart)
 const sourceGateBlock = script.slice(sourceGateStart, sourceGateEnd)
 const listenerPos = sourceGateBlock.indexOf('img.addEventListener("load", onLoad)')
