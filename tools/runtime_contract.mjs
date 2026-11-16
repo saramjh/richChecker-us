@@ -9,6 +9,7 @@ function requireText(text, label) {
 
 requireText("function setImageSourceAndWait(img, src, timeoutMs = 20000)", "source-specific image readiness gate")
 requireText("await setImageSourceAndWait(uploadedImage, photoUrl)", "new image load before analysis")
+requireText("async function recoverHeicPhotoBlob(file, timeoutMs = 10000)", "local HEIC decode for unsupported photos")
 requireText("async function recoverPhotoBlobWithNativeBitmap(file, timeoutMs = 7000)", "bounded native recovery for Android providers")
 requireText("let mediapipeModulesPromise = null", "module promise dedupe")
 requireText("let faceLandmarkerPromise = null", "landmarker promise dedupe")
@@ -67,7 +68,7 @@ requireText('timings.matching_ms', "matching timing")
 requireText('timings.render_ms', "render timing")
 requireText('id="topMatchPercent">${match.similarityDisplay}%', "static similarity value")
 
-if (!index.includes('js/script.js?v=20261116-us-android-recovery')) throw new Error("Missing versioned runtime script URL")
+if (!index.includes('js/script.js?v=20261116-us-heic-recovery')) throw new Error("Missing versioned runtime script URL")
 
 if (!index.includes('id="uploadedImageContainer" hidden') || !index.includes('id="choosePhotoBtn" type="button"')) {
   throw new Error("Initial photo entry must keep the native CTA and hide the undecoded photo")
